@@ -6,6 +6,7 @@ dotenv.config({ path: path.join(__dirname, "../.env") });
 export default {
   nodeENV: process.env.NODE_ENV,
   port: process.env.PORT || 3001,
+  baseUrl: process.env.BASE_URL,
   googleClientId: process.env.GOOGLE_CLIENT_ID!,
   googleClientSecret: process.env.GOOGLE_CLIENT_SECRET!,
   facebookAppId: process.env.FACEBOOK_APP_ID!,
