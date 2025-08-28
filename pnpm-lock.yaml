@@ -85,6 +85,12 @@ importers:
         specifier: ^4.20.5
         version: 4.20.5
 
+  shared:
+    dependencies:
+      zod:
+        specifier: ^4.1.4
+        version: 4.1.4
+
 packages:
 
   '@aws-crypto/crc32@5.2.0':

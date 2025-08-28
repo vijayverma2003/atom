@@ -15,5 +15,7 @@ export default {
   cloudflareAccessKeyId: process.env.CLOUDFLARE_ACCESS_KEY_ID!,
   cloudflareSecretAccessKey: process.env.CLOUDFLARE_SECRET_ACCESS_KEY!,
   cloudflareAccessEndpoint: process.env.CLOUDFLARE_ACCESS_ENDPOINT!,
+  cloudflarePublicDevelopmentUrl:
+    process.env.CLOUDFLARE_PUBLIC_DEVELOPMENT_URL!,
   jwtSecretKey: process.env.JWT_SECRET_KEY!,
 };
