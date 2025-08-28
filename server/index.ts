@@ -16,7 +16,7 @@ const corsConfiguration = {
 
 app.use(cors(corsConfiguration));
 app.use(cookieParser());
-app.use(router);
+app.use("/api", router);
 
 app.listen(port, (error) => {
   if (error) return console.log("Error starting the server...", error);
