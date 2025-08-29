@@ -7,16 +7,17 @@ import { validOrigins } from "./utils/origins";
 import e from "express";
 
 const app = express();
-const port = config.port || 3001;
 
+app.set("trust proxy", 1);
 const corsConfiguration = {
   origin: [...validOrigins],
   credentials: true,
-  allowedHeaders: ["Content-Type", "X-CSRF-Token"],
+  allowedHeaders: ["Content-Type"],
 };
 
 app.use(cors(corsConfiguration));
 app.use(cookieParser());
+
 app.use("/api", router);
 
 app.use((error: any, req: e.Request, res: e.Response, next: e.NextFunction) => {
@@ -24,7 +25,7 @@ app.use((error: any, req: e.Request, res: e.Response, next: e.NextFunction) => {
   return res.status(500).json({ error: "Internal Server Error" });
 });
 
-app.listen(port, (error) => {
+app.listen(config.port, (error) => {
   if (error) return console.log("Error starting the server...", error);
-  else console.log(`Listening to port ${port}...`);
+  else console.log(`Listening to port ${config.port}...`);
 });

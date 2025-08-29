@@ -1,9 +1,7 @@
 import { Router } from "express";
 import jwt from "jsonwebtoken";
-import crypto from "node:crypto";
 import passport from "passport";
 import prisma from "../../database/prisma";
-import requireCSRF from "../middleware/require-csrf";
 import config from "../utils/config";
 import * as cookies from "../utils/cookies";
 import { isValidOrigin, toOrigin } from "../utils/origins";
@@ -79,14 +77,7 @@ router.use("/callback/:path", async (req, res, next) => {
   }
 });
 
-router.get("/csrf-token", async (req, res) => {
-  const token = crypto.randomBytes(32).toString("base64url");
-
-  res.cookie(cookies.CSRF_COOKIE, token, cookies.csrfCookieOptions);
-  return res.status(200).json({ csrfToken: token });
-});
-
-router.post("/refresh-token", requireCSRF, async (req, res, next) => {
+router.post("/refresh-token", async (req, res, next) => {
   try {
     console.log("Refreshing token...");
     const oldToken = req.cookies[cookies.TOKEN_COOKIE];
