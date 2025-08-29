@@ -1,0 +1,30 @@
+@import "tailwindcss";
+
+:root {
+  --light-foreground: #f3f3f3;
+  --light-background: #202020;
+  --dark-foreground: #bdbdbd;
+  --dark-background: #0e0e0e;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-light-foreground: var(--light-foreground);
+  --color-light-background: var(--light-background);
+  --color-dark-foreground: var(--dark-foreground);
+  --color-dark-background: var(--dark-background);
+  --font-sans: var(--font-lexend);
+}
+
+body {
+  background: var(--dark-background);
+  color: var(--light-foreground);
+  font-family: var(--font-sans), Arial, Helvetica, sans-serif;
+}
+
+@layer components {
+  .btn {
+    @apply flex items-center justify-center;
+  }
+}
