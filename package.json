@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev:server": "pnpm --filter server run dev",
+    "db:migrate": "pnpm --filter database run migrate"
   },
   "keywords": [],
   "author": "Vijay <06.vijay.2003@gmail.com>",
