@@ -44,7 +44,7 @@ router.get("/login/:provider", (req, res, next) => {
     redirectURL,
     cookies.loginOriginCookieOptions
   );
-  
+
   return passport.authenticate(provider, { session: false })(req, res, next);
 });
 
@@ -109,6 +109,7 @@ router.post("/refresh-token", async (req, res, next) => {
 
     const newToken = issueToken(user.id);
 
+    res.clearCookie(cookies.TOKEN_COOKIE, cookies.tokenCookieOptions);
     res.cookie(cookies.TOKEN_COOKIE, newToken, cookies.tokenCookieOptions);
 
     return res.status(200).json({});

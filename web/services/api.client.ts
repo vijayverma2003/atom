@@ -1,5 +1,4 @@
 import axios, { AxiosError, AxiosResponse } from "axios";
-import { cookies } from "next/headers";
 
 const baseURL =
   process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://localhost:3000/api";

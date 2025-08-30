@@ -4,13 +4,8 @@ import { redirect } from "next/navigation";
 
 export default async function Home() {
   const { user, error } = await getClientUser();
-  console.log(user, error);
 
   const redirectUrl = process.env.NEXT_PUBLIC_BASE_URL + "/";
-
-  // if (user) redirect("/home");
-
-  console.log("Main Page.tsx", error);
 
   return (
     <nav className="flex justify-between items-center p-container">
