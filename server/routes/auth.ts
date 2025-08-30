@@ -6,6 +6,8 @@ import config from "../utils/config";
 import * as cookies from "../utils/cookies";
 import { isValidOrigin, toOrigin } from "../utils/origins";
 import { issueToken } from "../utils/tokens";
+import google from "../passport/strategy/google";
+import facebook from "../passport/strategy/facebook";
 
 const router = Router();
 
@@ -14,6 +16,9 @@ export const callbackConfiguration = {
   failureMessage: true,
   session: false,
 };
+
+passport.use("google", google);
+passport.use("facebook", facebook);
 
 router.get("/login/:provider", (req, res, next) => {
   const provider = req.params.provider;
@@ -39,7 +44,7 @@ router.get("/login/:provider", (req, res, next) => {
     redirectURL,
     cookies.loginOriginCookieOptions
   );
-
+  
   return passport.authenticate(provider, { session: false })(req, res, next);
 });
 
@@ -61,9 +66,9 @@ router.use("/callback/:path", async (req, res, next) => {
 
     const user = req.user as { id: string };
     const token = issueToken(user.id);
-
-    const loginOrigin = req.cookies?.[cookies.LOGIN_ORIGIN_COOKIE];
-    const origin = isValidOrigin(loginOrigin) ? loginOrigin : "/";
+    const redirectURL = req.cookies?.[cookies.LOGIN_ORIGIN_COOKIE];
+    const origin = toOrigin(redirectURL);
+    const path = isValidOrigin(origin) ? redirectURL : "/";
 
     res.clearCookie(cookies.LOGIN_ORIGIN_COOKIE, {
       path: cookies.loginOriginCookieOptions.path,
@@ -71,7 +76,7 @@ router.use("/callback/:path", async (req, res, next) => {
 
     res.cookie(cookies.TOKEN_COOKIE, token, cookies.tokenCookieOptions);
 
-    return res.status(303).redirect(origin);
+    return res.status(302).redirect(path);
   } catch (error) {
     next(error);
   }

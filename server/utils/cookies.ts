@@ -9,7 +9,7 @@ export const loginOriginCookieOptions: CookieOptions = {
   secure: config.nodeENV === "production",
   sameSite: "lax",
   maxAge: 1000 * 60 * 5, // 5 minutes
-  path: "/api/auth",
+  path: "/",
 };
 
 export const tokenCookieOptions: CookieOptions = {
@@ -17,5 +17,5 @@ export const tokenCookieOptions: CookieOptions = {
   secure: config.nodeENV === "production",
   sameSite: "lax",
   maxAge: 1000 * 60 * 60 * 24 * 7, // 7 Days
-  path: "/api",
+  path: "/",
 };

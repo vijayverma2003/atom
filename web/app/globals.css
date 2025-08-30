@@ -1,10 +1,16 @@
 @import "tailwindcss";
 
+html {
+  font-size: 62.5%;
+}
+
 :root {
+  --light-foreground-hover: #f3f3f3d8;
   --light-foreground: #f3f3f3;
   --light-background: #202020;
   --dark-foreground: #bdbdbd;
   --dark-background: #0e0e0e;
+  --radius: 14px;
 }
 
 @theme inline {
@@ -15,6 +21,7 @@
   --color-dark-foreground: var(--dark-foreground);
   --color-dark-background: var(--dark-background);
   --font-sans: var(--font-lexend);
+  --rounded-primary: var(--radius);
 }
 
 body {
@@ -25,6 +32,27 @@ body {
 
 @layer components {
   .btn {
-    @apply flex items-center justify-center;
+    @apply flex items-center justify-center bg-light-foreground
+      text-dark-background font-semibold px-8 py-3;
+
+    font-size: 1.4rem;
+    border-radius: var(--radius);
+    cursor: pointer;
+    transition: background 0.3s ease-out;
   }
+
+  .btn:hover {
+    background: var(--light-foreground-hover);
+  }
+}
+
+@layer utilities {
+  .p-container {
+    padding: 2rem 4rem;
+  }
+}
+
+svg path,
+svg stroke {
+  fill: var(--light-foreground);
 }
