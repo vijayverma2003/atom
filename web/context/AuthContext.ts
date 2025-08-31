@@ -1,4 +1,4 @@
-import { UserWithoutSensitiveInfo } from "@/app/types/users";
+import { UserWithoutSensitiveInfo } from "@/types/users";
 import { createContext } from "react";
 
 const AuthContext = createContext<UserWithoutSensitiveInfo | null>(null);

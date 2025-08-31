@@ -1,4 +1,4 @@
-import { User } from "../../../database/generated/prisma";
+import { User } from "../../database/generated/prisma";
 
 export type UserWithoutSensitiveInfo = Pick<
   User,

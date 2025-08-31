@@ -4,7 +4,7 @@ import AuthContext from "@/context/AuthContext";
 import api from "@/services/api.client";
 import { AxiosError, AxiosResponse } from "axios";
 import { PropsWithChildren, useEffect, useRef, useState } from "react";
-import { UserWithoutSensitiveInfo } from "../types/users";
+import { UserWithoutSensitiveInfo } from "../../types/users";
 
 const REFRESH_INTERVAL_MS = 10 * 60 * 1000; // 10 minutes
 const RECENT_MS = 30_000; // 30 seconds
