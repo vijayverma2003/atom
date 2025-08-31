@@ -6,6 +6,7 @@ html {
 
 :root {
   --light-foreground-hover: #f3f3f3d8;
+  --light-background-hover: #25252580;
   --light-foreground: #f3f3f3;
   --light-background: #252525;
   --dark-foreground: #bdbdbd;
@@ -20,6 +21,8 @@ html {
   --color-light-background: var(--light-background);
   --color-dark-foreground: var(--dark-foreground);
   --color-dark-background: var(--dark-background);
+  --color-light-foreground-hover: var(--light-foreground-hover);
+  --color-light-background-hover: var(--light-background-hover);
   --font-sans: var(--font-lexend);
   --rounded-primary: var(--radius);
 }
@@ -47,7 +50,7 @@ body {
   }
 
   .btn-ghost {
-    @apply bg-transparent;
+    @apply bg-transparent text-light-foreground;
   }
 
   .btn-ghost:hover {
@@ -84,4 +87,17 @@ body {
 svg path,
 svg stroke {
   fill: var(--light-foreground);
+}
+
+/* Tooltips */
+
+.tooltip-content {
+  opacity: 0;
+  transition: opacity 0.3s ease-in-out 0.2s;
+  pointer-events: none;
+}
+
+.tooltip-trigger:hover .tooltip-content {
+  pointer-events: auto;
+  opacity: 1;
 }
