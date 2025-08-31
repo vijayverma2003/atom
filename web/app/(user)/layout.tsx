@@ -1,11 +1,14 @@
 import { PropsWithChildren } from "react";
+import FilesContextProvider from "../_components/FilesContextProvider";
 import Navbar from "./_components/Navbar";
 
 const layout = ({ children }: PropsWithChildren) => {
   return (
     <main>
-      <Navbar />
-      {children}
+      <FilesContextProvider>
+        <Navbar />
+        {children}
+      </FilesContextProvider>
     </main>
   );
 };

@@ -1,4 +1,25 @@
+"use client";
+
+import FilesContext from "@/context/FilesContext";
+import { useRouter } from "next/navigation";
+import { ChangeEvent, useContext, useRef } from "react";
+
 const ShareImageIconButton = () => {
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
+  const { onFileDataChange } = useContext(FilesContext);
+  const router = useRouter();
+
+  const handleFileInputClick = () => {
+    if (fileInputRef.current) fileInputRef.current.click();
+  };
+
+  const handleFileInputChange = (event: ChangeEvent<HTMLInputElement>) => {
+    if (event.target.files) {
+      onFileDataChange([...event.target.files]);
+      router.push("/upload");
+    }
+  };
+
   return (
     <div className="relative tooltip-trigger">
       <button className="btn btn-ghost btn-circle">
@@ -17,8 +38,22 @@ const ShareImageIconButton = () => {
       </button>
       <div className="py-2 tooltip-content absolute top-[100%] right-0">
         <div className="bg-light-background-hover py-4 px-8 flex flex-col items-center justify-center gap-2 rounded-2xl border border-light-background">
+          <input
+            ref={fileInputRef}
+            id="nav-file-input"
+            name="nav-file-input"
+            type="file"
+            multiple
+            hidden
+            accept="image/*"
+            max={10}
+            onChange={handleFileInputChange}
+          />
           <h4 className="mb-4 font-semibold">Share Images</h4>
-          <button className="btn whitespace-nowrap text-lg">
+          <button
+            onClick={handleFileInputClick}
+            className="btn whitespace-nowrap text-lg"
+          >
             Select Files
           </button>
           <p className="text-dark-foreground text-center my-4 text-sm whitespace-nowrap">

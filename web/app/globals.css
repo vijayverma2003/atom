@@ -15,8 +15,8 @@ html {
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
+  --color-background: var(--dark-background);
+  --color-foreground: var(--light-foreground);
   --color-light-foreground: var(--light-foreground);
   --color-light-background: var(--light-background);
   --color-dark-foreground: var(--dark-foreground);
@@ -35,6 +35,7 @@ body {
 
 @layer components {
   /* Buttons */
+
   .btn {
     @apply flex items-center justify-center bg-light-foreground
       text-dark-background font-semibold px-8 py-3;
@@ -63,6 +64,14 @@ body {
     @apply p-0 rounded-full;
   }
 
+  .btn-faded {
+    @apply bg-light-background text-light-foreground;
+  }
+
+  .btn-faded:hover {
+    background-color: var(--color-light-background-hover);
+  }
+
   /* Avatar */
 
   .avatar-container {
@@ -75,6 +84,29 @@ body {
 
   .avatar-gradient {
     background: linear-gradient(#4e9bff, #77ffa2);
+  }
+
+  /* Inputs */
+
+  input,
+  textarea {
+    @apply w-full px-6 py-4;
+
+    font-size: 1.2rem;
+    border-radius: calc(var(--radius) / 2);
+    background-color: var(--light-background);
+    outline: none;
+    resize: none;
+  }
+
+  ::placeholder {
+    font-size: 1.2rem;
+  }
+
+  label {
+    display: block;
+    margin-bottom: 0.8rem;
+    color: var(--color-dark-foreground);
   }
 }
 
@@ -100,4 +132,11 @@ svg stroke {
 .tooltip-trigger:hover .tooltip-content {
   pointer-events: auto;
   opacity: 1;
+}
+
+/* Grids */
+
+.grid-upload-page {
+  display: grid;
+  grid-template: repeat(1, 1fr) / 1fr 400px;
 }
