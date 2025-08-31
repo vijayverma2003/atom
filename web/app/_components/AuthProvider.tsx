@@ -20,6 +20,7 @@ const AuthProvider = ({ children }: PropsWithChildren) => {
   const fetchUser = async () => {
     try {
       const { data } = await api.get<UserWithoutSensitiveInfo>("/users/me");
+      console.log("Fetched User", data.id);
       setUser(data);
     } catch (error) {
       if (error instanceof AxiosError) {
@@ -41,7 +42,10 @@ const AuthProvider = ({ children }: PropsWithChildren) => {
 
   const refreshToken = async () => {
     try {
-      if (refreshedRecently()) return;
+      if (refreshedRecently()) {
+        if (!user) fetchUser();
+        return;
+      }
 
       if (!refreshingRef.current) {
         refreshingRef.current = api.post("/auth/refresh-token");
