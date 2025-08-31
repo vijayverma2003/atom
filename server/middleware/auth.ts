@@ -15,7 +15,9 @@ export default async function auth(
     if (!token)
       return res.status(401).json({ error: "Missing authorization token" });
 
-    const payload = jwt.verify(token, config.jwtSecretKey) as {
+    const payload = jwt.verify(token, config.jwtSecretKey, {
+      clockTolerance: 5,
+    }) as {
       userId: string;
     };
 

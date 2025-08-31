@@ -1,17 +1,34 @@
 "use client";
 
+import AuthContext from "@/context/AuthContext";
 import api from "@/services/api.client";
-import { AxiosResponse } from "axios";
+import { AxiosError, AxiosResponse } from "axios";
 import { PropsWithChildren, useEffect, useRef, useState } from "react";
+import { UserWithoutSensitiveInfo } from "../types/users";
 
 const REFRESH_INTERVAL_MS = 10 * 60 * 1000; // 10 minutes
 const RECENT_MS = 30_000; // 30 seconds
 
 const AuthProvider = ({ children }: PropsWithChildren) => {
+  const [user, setUser] = useState<UserWithoutSensitiveInfo | null>(null);
+
   // Todo
   // Return expiresIn from the server side to not add a magic interval
 
   const refreshingRef = useRef<Promise<AxiosResponse<any, any>> | null>(null);
+
+  const fetchUser = async () => {
+    try {
+      const { data } = await api.get<UserWithoutSensitiveInfo>("/users/me");
+      setUser(data);
+    } catch (error) {
+      if (error instanceof AxiosError) {
+        console.log(error.response?.data);
+      }
+      // Todo - Show toast notification
+      console.log("Fetching User Failed", error);
+    }
+  };
 
   const storeLastRefreshAt = () => {
     localStorage.setItem("auth:lastRefreshAt", Date.now().toString());
@@ -34,8 +51,12 @@ const AuthProvider = ({ children }: PropsWithChildren) => {
         }
       }
       await refreshingRef.current;
+      console.log("Refreshed Token");
 
       storeLastRefreshAt();
+
+      // Fetch user data
+      if (!user) fetchUser();
     } catch (error) {
       console.log("Refreshing Token Failed", error);
     } finally {
@@ -77,7 +98,7 @@ const AuthProvider = ({ children }: PropsWithChildren) => {
     };
   }, []);
 
-  return <>{children}</>;
+  return <AuthContext.Provider value={user}>{children}</AuthContext.Provider>;
 };
 
 export default AuthProvider;
