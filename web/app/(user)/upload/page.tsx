@@ -1,5 +1,6 @@
 "use client";
 
+import Carousel from "@/app/_components/Carousel";
 import FilesContext from "@/context/FilesContext";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
@@ -49,8 +50,9 @@ const FileUploadPage = () => {
         </button>
       </div>
       <div className="grid-upload-page h-full">
-        <div className="flex justify-center items-center whitespace-nowrap">
-          <div className="flex justify-start items-start w-[500px] h-[500px] overflow-hidden">
+        <div className="flex justify-center items-center">
+          <Carousel imageURLs={previewURLs} />
+          {/* <div className="flex justify-start items-start w-[500px] h-[500px] overflow-hidden">
             {previewURLs.map((url, index) => (
               <Image
                 src={url}
@@ -60,7 +62,7 @@ const FileUploadPage = () => {
                 height={500}
               />
             ))}
-          </div>
+          </div> */}
         </div>
         <div className="bg-light-background-hover rounded-l-4xl py-8 px-8">
           <h1 className="text-3xl font-semibold mb-12">Create Object</h1>
