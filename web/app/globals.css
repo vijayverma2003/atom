@@ -141,11 +141,6 @@ body {
   }
 }
 
-svg path,
-svg stroke {
-  fill: var(--light-foreground);
-}
-
 /* Tooltips */
 
 .tooltip-content {
@@ -164,4 +159,20 @@ svg stroke {
 .grid-upload-page {
   display: grid;
   grid-template: repeat(1, 1fr) / 1fr 400px;
+}
+
+/* Animations */
+
+.drop-animation .drop-animation-image {
+  animation: ImageDropAnimation 0.8s ease-in-out forwards;
+}
+
+@keyframes ImageDropAnimation {
+  from {
+    transform: rotate(0);
+  }
+
+  to {
+    transform: rotate(12deg);
+  }
 }
