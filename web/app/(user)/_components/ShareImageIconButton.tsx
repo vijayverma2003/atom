@@ -60,7 +60,7 @@ const ShareImageIconButton = () => {
             Select Files
           </button>
           <p className="text-dark-foreground text-center my-4 text-sm whitespace-nowrap">
-            Drag and Drop images anywhere to upload
+            Drag and Drop images <br /> on page to upload
           </p>
         </div>
       </div>
