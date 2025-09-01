@@ -4,25 +4,57 @@ import Carousel from "@/app/_components/Carousel";
 import FilesContext from "@/context/FilesContext";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import React, { useContext, useEffect, useState } from "react";
+import { ChangeEvent, useContext, useEffect, useRef, useState } from "react";
 
 const FileUploadPage = () => {
   const { files: uploadedFiles } = useContext(FilesContext);
   const [previewURLs, setPreviewURLs] = useState<string[]>([]);
   const [files, setFiles] = useState<File[]>([]);
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const router = useRouter();
 
-  const createPreviewURL = (file: File) => {
-    return URL.createObjectURL(file);
+  const createPreviewURLs = (files: File[]) => {
+    const urls: string[] = [];
+
+    for (let file of files) urls.push(URL.createObjectURL(file));
+    return urls;
+  };
+
+  const handleFileInputClick = () => {
+    if (fileInputRef.current) fileInputRef.current.click();
+  };
+
+  const handleFileInputChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const currentFiles = [...files];
+
+    if (e.target.files) {
+      for (let file of e.target.files)
+        if (!currentFiles.includes(file)) currentFiles.push(file);
+    }
+
+    setFiles(currentFiles);
+    setPreviewURLs(createPreviewURLs(currentFiles));
+  };
+
+  const handleImageRemove = (index: number) => {
+    const currentFiles = [...files];
+    const currentPreviews = [...previewURLs];
+
+    currentFiles.splice(index, 1);
+    currentPreviews.splice(index, 1);
+
+    setFiles(currentFiles);
+    setPreviewURLs(currentPreviews);
+    setCurrentImageIndex(0);
   };
 
   useEffect(() => {
-    const previewURLs: string[] = [];
+    const files: File[] = [];
+    for (let file of uploadedFiles) if (!files.includes(file)) files.push(file);
 
-    for (let file of uploadedFiles) previewURLs.push(createPreviewURL(file));
-
-    setPreviewURLs(previewURLs);
-    setFiles([...uploadedFiles]);
+    setFiles(files);
+    setPreviewURLs(createPreviewURLs(files));
 
     return () => {
       for (let url of previewURLs) URL.revokeObjectURL(url);
@@ -50,29 +82,67 @@ const FileUploadPage = () => {
         </button>
       </div>
       <div className="grid-upload-page h-full">
-        <div className="flex justify-center items-center">
-          <Carousel imageURLs={previewURLs} />
-          {/* <div className="flex justify-start items-start w-[500px] h-[500px] overflow-hidden">
-            {previewURLs.map((url, index) => (
-              <Image
-                src={url}
-                alt="Preview"
-                key={url}
-                width={500}
-                height={500}
-              />
-            ))}
-          </div> */}
-        </div>
-        <div className="bg-light-background-hover rounded-l-4xl py-8 px-8">
-          <h1 className="text-3xl font-semibold mb-12">Create Object</h1>
-          <div className="my-4">
-            <label htmlFor="title">Title</label>
-            <input name="title" id="title" type="text" />
+        <div className="flex flex-col justify-center items-center gap-6">
+          <Carousel
+            imageURLs={previewURLs}
+            currentIndex={currentImageIndex}
+            setCurrentIndex={setCurrentImageIndex}
+            onRemove={handleImageRemove}
+          />
+          <div>
+            <input
+              id="file-input"
+              name="file-input"
+              type="file"
+              multiple
+              accept="image/*"
+              hidden
+              ref={fileInputRef}
+              onChange={handleFileInputChange}
+            />
+            <button className="btn btn-faded" onClick={handleFileInputClick}>
+              Select Images
+            </button>
           </div>
-          <div className="my-4">
-            <label htmlFor="title">Description</label>
-            <textarea rows={10} name="description" id="description" />
+        </div>
+        <div className="bg-light-background-hover rounded-l-4xl py-8 px-8 flex flex-col justify-between">
+          <div>
+            <h1 className="text-3xl font-semibold mb-12">Create Object</h1>
+            <div className="mb-12">
+              <h2 className="mb-8">Selected Images</h2>
+              {previewURLs.length > 0 ? (
+                <div className="flex items-center gap-4 overflow-x-scroll no-scrollbar">
+                  {previewURLs.map((url, index) => (
+                    <Image
+                      src={url}
+                      alt="Preview"
+                      width={100}
+                      height={100}
+                      key={url}
+                      onClick={() => setCurrentImageIndex(index)}
+                      className="cursor-pointer"
+                    />
+                  ))}
+                </div>
+              ) : (
+                <div>
+                  <span className="badge">No images selected</span>
+                </div>
+              )}
+            </div>
+            <div className="my-4">
+              <label htmlFor="title">Title</label>
+              <input name="title" id="title" type="text" />
+            </div>
+            <div className="my-4">
+              <label htmlFor="title">Description</label>
+              <textarea rows={10} name="description" id="description" />
+            </div>
+          </div>
+          <div className="flex justify-center">
+            <button className="btn btn-faded w-full" disabled={true}>
+              Create Object
+            </button>
           </div>
         </div>
       </div>
