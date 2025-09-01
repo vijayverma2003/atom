@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { ChangeEvent, useContext, useRef } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import Link from "next/link";
 
 const ShareImageIconButton = () => {
   const fileInputRef = useRef<HTMLInputElement | null>(null);
@@ -16,7 +17,7 @@ const ShareImageIconButton = () => {
   };
 
   const handleFileInputChange = (event: ChangeEvent<HTMLInputElement>) => {
-    if (event.target.files) {
+    if (event.target.files && event.target.files.length > 0) {
       onFileDataChange([...event.target.files]);
       router.push("/upload");
     }
@@ -24,7 +25,7 @@ const ShareImageIconButton = () => {
 
   return (
     <div className="relative tooltip-trigger">
-      <button className="btn btn-ghost btn-circle">
+      <Link href="/upload" className="btn btn-ghost btn-circle">
         <svg
           width="24"
           height="24"
@@ -37,7 +38,7 @@ const ShareImageIconButton = () => {
             fill="var(--light-foreground)"
           />
         </svg>
-      </button>
+      </Link>
       <div className="py-2 tooltip-content absolute top-[100%] right-0">
         <div className="bg-light-background-hover py-4 px-8 flex flex-col items-center justify-center gap-2 rounded-2xl border border-light-background">
           <input
@@ -51,7 +52,7 @@ const ShareImageIconButton = () => {
             max={10}
             onChange={handleFileInputChange}
           />
-          <h4 className="mb-4 font-semibold">Share Images</h4>
+          <h4 className="mb-4 font-semibold">Create Objects</h4>
           <button
             onClick={handleFileInputClick}
             className="btn whitespace-nowrap text-lg"
@@ -59,7 +60,7 @@ const ShareImageIconButton = () => {
             Select Files
           </button>
           <p className="text-dark-foreground text-center my-4 text-sm whitespace-nowrap">
-            Drag and Drop files anywhere to upload
+            Drag and Drop images anywhere to upload
           </p>
         </div>
       </div>
