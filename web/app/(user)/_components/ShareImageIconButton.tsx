@@ -3,6 +3,8 @@
 import FilesContext from "@/context/FilesContext";
 import { useRouter } from "next/navigation";
 import { ChangeEvent, useContext, useRef } from "react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 
 const ShareImageIconButton = () => {
   const fileInputRef = useRef<HTMLInputElement | null>(null);

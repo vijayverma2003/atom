@@ -5,6 +5,12 @@ import FilesContext from "@/context/FilesContext";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { ChangeEvent, useContext, useEffect, useRef, useState } from "react";
+import { useForm } from "react-hook-form";
+import {
+  ImageObjectData,
+  imageObjectSchema,
+} from "@/../shared/validation/image-object";
+import { zodResolver } from "@hookform/resolvers/zod";
 
 const FileUploadPage = () => {
   const { files: uploadedFiles } = useContext(FilesContext);
@@ -13,6 +19,18 @@ const FileUploadPage = () => {
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const router = useRouter();
+
+  const {
+    register,
+    setValue,
+    watch,
+    formState: { isValid },
+    handleSubmit,
+    trigger,
+  } = useForm<ImageObjectData>({
+    resolver: zodResolver(imageObjectSchema),
+    mode: "all",
+  });
 
   const createPreviewURLs = (files: File[]) => {
     const urls: string[] = [];
@@ -27,14 +45,15 @@ const FileUploadPage = () => {
 
   const handleFileInputChange = (e: ChangeEvent<HTMLInputElement>) => {
     const currentFiles = [...files];
+    const newFiles: File[] = [];
 
     if (e.target.files) {
       for (let file of e.target.files)
-        if (!currentFiles.includes(file)) currentFiles.push(file);
+        if (!currentFiles.includes(file)) newFiles.push(file);
     }
 
-    setFiles(currentFiles);
-    setPreviewURLs(createPreviewURLs(currentFiles));
+    setFiles([...currentFiles, ...newFiles]);
+    setPreviewURLs((urls) => [...urls, ...createPreviewURLs(newFiles)]);
   };
 
   const handleImageRemove = (index: number) => {
@@ -47,7 +66,13 @@ const FileUploadPage = () => {
     setFiles(currentFiles);
     setPreviewURLs(currentPreviews);
     setCurrentImageIndex(0);
+    setValue("images", currentFiles);
   };
+
+  const onSubmit = handleSubmit((data) => {
+    // Todo - Handle Form Submission
+    console.log(data);
+  });
 
   useEffect(() => {
     const files: File[] = [];
@@ -60,6 +85,11 @@ const FileUploadPage = () => {
       for (let url of previewURLs) URL.revokeObjectURL(url);
     };
   }, [uploadedFiles]);
+
+  useEffect(() => {
+    setValue("images", files);
+    trigger("images");
+  }, [files]);
 
   return (
     <section className="absolute top-0 left-0 min-h-screen h-full w-full bg-background">
@@ -132,15 +162,23 @@ const FileUploadPage = () => {
             </div>
             <div className="my-4">
               <label htmlFor="title">Title</label>
-              <input name="title" id="title" type="text" />
+              <input id="title" {...register("title")} />
             </div>
             <div className="my-4">
-              <label htmlFor="title">Description</label>
-              <textarea rows={10} name="description" id="description" />
+              <label htmlFor="description">Description</label>
+              <textarea
+                rows={10}
+                id="description"
+                {...register("description")}
+              />
             </div>
           </div>
           <div className="flex justify-center">
-            <button className="btn btn-faded w-full" disabled={true}>
+            <button
+              onClick={onSubmit}
+              className="btn btn-faded w-full"
+              disabled={!isValid}
+            >
               Create Object
             </button>
           </div>

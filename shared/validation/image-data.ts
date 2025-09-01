@@ -1,6 +1,6 @@
 import z from "zod";
 
-const imageDataSchema = z.object({
+const imageFileSchema = z.object({
   type: z.enum([
     "image/png",
     "image/jpeg",
@@ -18,4 +18,4 @@ const imageDataSchema = z.object({
     .max(10_000_000, "Size must be less than 10MB"),
 });
 
-export default imageDataSchema;
+export default imageFileSchema;
