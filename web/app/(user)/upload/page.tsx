@@ -75,11 +75,19 @@ const FileUploadPage = () => {
   });
 
   useEffect(() => {
-    const files: File[] = [];
-    for (let file of uploadedFiles) if (!files.includes(file)) files.push(file);
+    const currentFiles = [...files];
+    const currentPreviews = [...previewURLs];
+    const newFiles: File[] = [];
 
-    setFiles(files);
-    setPreviewURLs(createPreviewURLs(files));
+    for (let file of uploadedFiles)
+      if (!newFiles.includes(file) && !currentFiles.includes(file))
+        newFiles.push(file);
+
+    const updatedFiles = [...currentFiles, ...newFiles];
+    const newPreviewURLs: string[] = createPreviewURLs(newFiles);
+
+    setFiles(updatedFiles);
+    setPreviewURLs([...currentPreviews, ...newPreviewURLs]);
 
     return () => {
       for (let url of previewURLs) URL.revokeObjectURL(url);
@@ -141,7 +149,7 @@ const FileUploadPage = () => {
             <div className="mb-12">
               <h2 className="mb-8">Selected Images</h2>
               {previewURLs.length > 0 ? (
-                <div className="flex items-center gap-4 overflow-x-scroll no-scrollbar">
+                <div className="flex items-center gap-4 overflow-x-scroll no-scrollbar overflow-y-hidden">
                   {previewURLs.map((url, index) => (
                     <Image
                       src={url}
@@ -150,7 +158,7 @@ const FileUploadPage = () => {
                       height={100}
                       key={url}
                       onClick={() => setCurrentImageIndex(index)}
-                      className="cursor-pointer"
+                      className="cursor-pointer object-cover max-h-[100px] max-w-[100px]" 
                     />
                   ))}
                 </div>
