@@ -1,13 +1,36 @@
 "use client";
 
-import { DragEvent, PropsWithChildren, useRef, useState } from "react";
+import { ACCEPTED_IMAGE_TYPES } from "@/../../shared/validation/image-object";
+import FilesContext from "@/context/FilesContext";
+import { useRouter } from "next/navigation";
+import {
+  DragEvent,
+  PropsWithChildren,
+  useContext,
+  useRef,
+  useState,
+} from "react";
 
 const DropArea = ({ children }: PropsWithChildren) => {
   const [activated, setActivated] = useState(false);
+  const [validType, setValidType] = useState(true);
   const containerRef = useRef<HTMLDivElement>(null);
+  const { onFileDataChange } = useContext(FilesContext);
+  const router = useRouter();
 
   const handleDragOver = (e: DragEvent<HTMLDivElement>) => {
     e.preventDefault();
+
+    if (e.dataTransfer && e.dataTransfer.items) {
+      const items = [...e.dataTransfer.items];
+
+      const allValid = items.every((file) =>
+        ACCEPTED_IMAGE_TYPES.includes(file.type)
+      );
+
+      setValidType(allValid);
+    }
+
     setActivated(true);
   };
 
@@ -18,7 +41,24 @@ const DropArea = ({ children }: PropsWithChildren) => {
 
   const handleDrop = (e: DragEvent<HTMLDivElement>) => {
     e.preventDefault();
-    console.log("Dropped", e.dataTransfer?.files);
+
+    // Todo: If all file types are invalid, show a toast notification.
+
+    if (e.dataTransfer && e.dataTransfer.files) {
+      const files = [...e.dataTransfer.files];
+      const validFiles: File[] = [];
+
+      files.forEach(
+        (file) =>
+          ACCEPTED_IMAGE_TYPES.includes(file.type) && validFiles.push(file)
+      );
+
+      if (validFiles.length > 0) {
+        onFileDataChange(validFiles);
+        setActivated(false);
+        router.push("/upload");
+      }
+    }
 
     setActivated(false);
   };
@@ -69,7 +109,7 @@ const DropArea = ({ children }: PropsWithChildren) => {
                 </div>
               </div>
               <p className="font-bold text-dark-foreground">
-                Drag and Drop Images
+                {validType ? "Drop the Images" : "Unsupported File Type"}
               </p>
             </div>
           </div>
