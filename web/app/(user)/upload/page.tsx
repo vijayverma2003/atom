@@ -5,7 +5,7 @@ import FilesContext from "@/context/FilesContext";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { ChangeEvent, useContext, useEffect, useRef, useState } from "react";
-import { useForm } from "react-hook-form";
+import { FieldError, FieldErrors, useForm } from "react-hook-form";
 import {
   ImageObjectData,
   imageObjectSchema,
@@ -19,17 +19,17 @@ const FileUploadPage = () => {
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const router = useRouter();
+  const componentReloadRef = useRef(0);
 
   const {
     register,
     setValue,
-    watch,
-    formState: { isValid },
+    formState: { isValid, errors: formErrors },
     handleSubmit,
     trigger,
   } = useForm<ImageObjectData>({
     resolver: zodResolver(imageObjectSchema),
-    mode: "all",
+    mode: "onChange",
   });
 
   const createPreviewURLs = (files: File[]) => {
@@ -71,12 +71,13 @@ const FileUploadPage = () => {
 
   const onSubmit = handleSubmit((data) => {
     // Todo - Handle Form Submission
+
     console.log(data);
   });
 
   useEffect(() => {
     const currentFiles = [...files];
-    const currentPreviews = [...previewURLs];
+
     const newFiles: File[] = [];
 
     for (let file of uploadedFiles)
@@ -86,8 +87,12 @@ const FileUploadPage = () => {
     const updatedFiles = [...currentFiles, ...newFiles];
     const newPreviewURLs: string[] = createPreviewURLs(newFiles);
 
-    setFiles(updatedFiles);
-    setPreviewURLs([...currentPreviews, ...newPreviewURLs]);
+    if (updatedFiles.length > 0) setFiles(updatedFiles);
+    if (newPreviewURLs.length > 0)
+      setPreviewURLs((currentPreviews) => [
+        ...currentPreviews,
+        ...newPreviewURLs,
+      ]);
 
     return () => {
       for (let url of previewURLs) URL.revokeObjectURL(url);
@@ -96,7 +101,8 @@ const FileUploadPage = () => {
 
   useEffect(() => {
     setValue("images", files);
-    trigger("images");
+    if (componentReloadRef.current > 0) trigger("images");
+    componentReloadRef.current++;
   }, [files]);
 
   return (
@@ -182,14 +188,26 @@ const FileUploadPage = () => {
               />
             </div>
           </div>
-          <div className="flex justify-center">
-            <button
-              onClick={onSubmit}
-              className="btn btn-faded w-full"
-              disabled={!isValid}
-            >
-              Create Object
-            </button>
+          <div>
+            {Object.keys(formErrors).length > 0 && (
+              <div className="mb-4 bg-red-600/10 border border-red-600/20 py-4 px-6 rounded-2xl">
+                <h3 className="text-lg font-semibold mb-4">Errors</h3>
+                <ol>
+                  <li className="mb-2">{formErrors.title?.message}</li>
+                  <li className="mb-2">{formErrors.description?.message}</li>
+                  <li className="mb-2">{formErrors.images?.message}</li>
+                </ol>
+              </div>
+            )}
+            <div className="flex justify-center">
+              <button
+                onClick={onSubmit}
+                className="btn btn-faded w-full"
+                disabled={!isValid}
+              >
+                Create Object
+              </button>
+            </div>
           </div>
         </div>
       </div>
