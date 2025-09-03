@@ -48,7 +48,7 @@ const Carousel = ({
         )}
         {imageURLs.map((url, index) => (
           <Image
-            className={`absolute top-0 left-0 w-full h-full object-cover transition-opacity ease-out duration-500 opacity-0 ${
+            className={`absolute top-0 left-0 w-full h-full object-contain transition-opacity ease-out duration-500 opacity-0 ${
               index === currentIndex && "opacity-100"
             }`}
             src={url}
@@ -56,6 +56,7 @@ const Carousel = ({
             alt="Preview"
             width={500}
             height={500}
+            draggable={false}
           />
         ))}
       </div>

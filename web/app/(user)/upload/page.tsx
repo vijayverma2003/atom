@@ -158,7 +158,8 @@ const FileUploadPage = () => {
                       height={100}
                       key={url}
                       onClick={() => setCurrentImageIndex(index)}
-                      className="cursor-pointer object-cover max-h-[100px] max-w-[100px]" 
+                      className="cursor-pointer object-cover max-h-[100px] max-w-[100px]"
+                      draggable={false}
                     />
                   ))}
                 </div>
