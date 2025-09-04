@@ -5,12 +5,10 @@ const Carousel = ({
   imageURLs,
   currentIndex,
   setCurrentIndex,
-  onRemove,
 }: {
   imageURLs: string[];
   currentIndex: number;
   setCurrentIndex: Dispatch<SetStateAction<number>>;
-  onRemove: (index: number) => void;
 }) => {
   const handlePrevious = () => {
     setCurrentIndex((prevIndex) =>
@@ -24,28 +22,7 @@ const Carousel = ({
 
   return (
     <div className="flex flex-col gap-6">
-      <div className="w-[500px] h-[500px] overflow-hidden relative bg-light-background-hover">
-        {imageURLs.length > 0 && (
-          <button
-            className="btn btn-faded btn-circle absolute right-[2%] top-[2%] z-10"
-            onClick={() => onRemove(currentIndex)}
-          >
-            <svg
-              width="24"
-              height="24"
-              viewBox="0 0 24 24"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                d="M8 8L12 12M12 12L16 16M12 12L16 8M12 12L8 16"
-                stroke="var(--dark-foreground)"
-                strokeWidth="2"
-                strokeLinecap="round"
-              />
-            </svg>
-          </button>
-        )}
+      <div className="w-[500px] h-[500px] overflow-hidden relative">
         {imageURLs.map((url, index) => (
           <Image
             className={`absolute top-0 left-0 w-full h-full object-contain transition-opacity ease-out duration-500 opacity-0 ${
