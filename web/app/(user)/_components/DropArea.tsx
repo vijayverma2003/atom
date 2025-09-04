@@ -20,6 +20,7 @@ const DropArea = ({ children }: PropsWithChildren) => {
 
   const handleDragOver = (e: DragEvent<HTMLDivElement>) => {
     e.preventDefault();
+    setActivated(true);
 
     if (e.dataTransfer && e.dataTransfer.items) {
       const items = [...e.dataTransfer.items];
@@ -30,8 +31,6 @@ const DropArea = ({ children }: PropsWithChildren) => {
 
       setValidType(allValid);
     }
-
-    setActivated(true);
   };
 
   const handleDragLeave = (e: DragEvent<HTMLDivElement>) => {
@@ -72,7 +71,11 @@ const DropArea = ({ children }: PropsWithChildren) => {
         onDrop={handleDrop}
         className="drop-area min-h-screen"
       >
-        {children}
+        <div
+          className={activated ? "pointer-events-none" : "pointer-events-auto"}
+        >
+          {children}
+        </div>
       </div>
       {activated && (
         <div className="fixed top-0 left-0 h-screen w-screen flex justify-center items-center bg-background/95 z-50 pointer-events-none drop-animation">
