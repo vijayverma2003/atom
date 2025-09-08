@@ -30,7 +30,7 @@ const MAX_COLUMNS = 5;
 const MIN_COLUMNS = 2;
 const MIN_CONTAINER_WIDTH = 300;
 
-const ImageGrid = () => {
+const MasonryGrid = () => {
   const [containerHeight, setContainerHeight] = useState(0);
   const [transformedImages, setTransformedImages] = useState<
     TransformedImageData[]
@@ -199,4 +199,4 @@ const ImageGrid = () => {
   );
 };
 
-export default ImageGrid;
+export default MasonryGrid;
