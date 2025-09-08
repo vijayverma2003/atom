@@ -176,3 +176,17 @@ body {
     transform: rotate(12deg);
   }
 }
+
+.animate-opacity {
+  animation: AnimateOpacity 0.2s ease-out forwards;
+}
+
+@keyframes AnimateOpacity {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}

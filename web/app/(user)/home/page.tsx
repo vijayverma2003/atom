@@ -1,7 +1,13 @@
+import ImageGrid from "@/app/_components/ImageGrid";
 import React from "react";
 
 const Home = () => {
-  return <div>Home</div>;
+  return (
+    <main className="p-container">
+      <h1 className="text-4xl font-bold mb-12">Home</h1>
+      <ImageGrid />
+    </main>
+  );
 };
 
 export default Home;
