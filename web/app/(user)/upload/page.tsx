@@ -1,16 +1,16 @@
 "use client";
 
-import Carousel from "@/app/_components/Carousel";
-import FilesContext from "@/context/FilesContext";
-import Image from "next/image";
-import { useRouter } from "next/navigation";
-import { ChangeEvent, useContext, useEffect, useRef, useState } from "react";
-import { FieldError, FieldErrors, useForm } from "react-hook-form";
 import {
   ImageObjectData,
   imageObjectSchema,
 } from "@/../shared/validation/image-object";
+import Carousel from "@/app/_components/Carousel";
+import FilesContext from "@/context/FilesContext";
 import { zodResolver } from "@hookform/resolvers/zod";
+import Image from "next/image";
+import { useRouter } from "next/navigation";
+import { ChangeEvent, useContext, useEffect, useRef, useState } from "react";
+import { useForm } from "react-hook-form";
 
 const FileUploadPage = () => {
   const { files: uploadedFiles } = useContext(FilesContext);
@@ -106,7 +106,7 @@ const FileUploadPage = () => {
   }, [files]);
 
   return (
-    <section className="absolute top-0 left-0 min-h-screen h-full w-full bg-background">
+    <section className="absolute top-0 left-0 min-h-screen h-full w-full bg-background z-50">
       <div className="absolute top-10 left-10">
         <button onClick={router.back} className="btn btn-faded btn-circle">
           <svg
@@ -181,7 +181,7 @@ const FileUploadPage = () => {
             </button>
           </div>
         </div>
-        <div className="bg-light-background-hover rounded-l-4xl py-8 px-8 flex flex-col justify-between">
+        <div className="bg-light-background/50 rounded-l-4xl py-8 px-8 flex flex-col justify-between">
           <div>
             <h1 className="text-3xl font-semibold mb-12">Create Object</h1>
             <div className="mb-12">

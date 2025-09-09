@@ -79,7 +79,7 @@ const DropArea = ({ children }: PropsWithChildren) => {
       </div>
       {activated && (
         <div className="fixed top-0 left-0 h-screen w-screen flex justify-center items-center bg-background/95 z-50 pointer-events-none drop-animation">
-          <div className="max-w-[280px] w-full min-h-[200px] bg-light-background-hover rounded-3xl flex justify-center items-center">
+          <div className="max-w-[280px] w-full min-h-[200px] bg-light-background/80 rounded-3xl flex justify-center items-center">
             <div className="border-2 border-dashed border-dark-foreground/10 max-w-[calc(280px-20px)] w-full min-h-[calc(200px-20px)] rounded-3xl flex flex-col justify-center items-center gap-8">
               <div className="relative">
                 <div className="w-[100px] h-[100px] bg-light-background rounded-xl flex justify-center items-center border border-dark-foreground/10">

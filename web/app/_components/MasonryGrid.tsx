@@ -191,7 +191,7 @@ const MasonryGrid = () => {
               width={image.width}
               height={image.height}
               draggable={false}
-              className="bg-light-background-hover"
+              className="bg-light-background/50 brightness-90"
             />
           )
       )}

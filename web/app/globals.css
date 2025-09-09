@@ -5,10 +5,8 @@ html {
 }
 
 :root {
-  --light-foreground-hover: #f3f3f3d8;
-  --light-background-hover: #25252580;
   --light-foreground: #f3f3f3;
-  --light-background: #252525;
+  --light-background: #1f1f1f;
   --dark-foreground: #bdbdbd;
   --dark-background: #0e0e0e;
   --radius: 14px;
@@ -21,8 +19,6 @@ html {
   --color-light-background: var(--light-background);
   --color-dark-foreground: var(--dark-foreground);
   --color-dark-background: var(--dark-background);
-  --color-light-foreground-hover: var(--light-foreground-hover);
-  --color-light-background-hover: var(--light-background-hover);
   --font-sans: var(--font-lexend);
   --rounded-primary: var(--radius);
 }
@@ -64,7 +60,7 @@ body {
   }
 
   .btn:hover {
-    background: var(--light-foreground-hover);
+    @apply bg-light-foreground/80;
   }
 
   .btn-ghost {
@@ -86,7 +82,7 @@ body {
   }
 
   .btn-faded:hover {
-    background-color: var(--color-light-background-hover);
+    @apply bg-light-background/50;
   }
 
   /* Avatar */

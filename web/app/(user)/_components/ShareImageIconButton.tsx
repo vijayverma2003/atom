@@ -24,7 +24,7 @@ const ShareImageIconButton = () => {
   };
 
   return (
-    <div className="relative tooltip-trigger">
+    <div className="relative tooltip-trigger z-10">
       <Link href="/upload" className="btn btn-ghost btn-circle">
         <svg
           width="24"
@@ -40,7 +40,7 @@ const ShareImageIconButton = () => {
         </svg>
       </Link>
       <div className="py-2 tooltip-content absolute top-[100%] right-0">
-        <div className="bg-light-background-hover py-4 px-8 flex flex-col items-center justify-center gap-2 rounded-2xl border border-light-background">
+        <div className="bg-light-background/80 py-4 px-8 flex flex-col items-center justify-center gap-2 rounded-2xl border border-light-background">
           <input
             ref={fileInputRef}
             id="nav-file-input"
@@ -59,7 +59,7 @@ const ShareImageIconButton = () => {
           >
             Select Files
           </button>
-          <p className="text-dark-foreground text-center my-4 text-sm whitespace-nowrap">
+          <p className="text-dark-foreground text-center my-4 text-sm whitespace-nowrap font-semibold">
             Drag and Drop images <br /> on page to upload
           </p>
         </div>
