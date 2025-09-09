@@ -116,7 +116,7 @@ const MasonryGrid = () => {
     const scrollStart = window.scrollY - wrapper.offsetTop;
     const screenHeight = window.innerHeight;
     const start = scrollStart - screenHeight;
-    const end = scrollStart + screenHeight;
+    const end = scrollStart + screenHeight * 1.5;
 
     const visibleImageIds = images
       .filter((image) => image.translateY >= start && image.translateY <= end)
