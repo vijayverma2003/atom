@@ -1,4 +1,5 @@
 import Image from "next/image";
+import Link from "next/link";
 import React from "react";
 
 const ProfileIconButton = ({ avatarURL }: { avatarURL: string | null }) => {
@@ -11,9 +12,12 @@ const ProfileIconButton = ({ avatarURL }: { avatarURL: string | null }) => {
       </button>
       <div className="py-2 tooltip-content absolute top-[100%] right-0">
         <div className="bg-light-background/50 py-4 px-8 flex flex-col items-center justify-center gap-2 rounded-2xl border border-light-background">
-          <button className="btn btn-ghost whitespace-nowrap text-lg w-full">
+          <Link
+            href="/profile"
+            className="btn btn-ghost whitespace-nowrap text-lg w-full"
+          >
             Your Profile
-          </button>
+          </Link>
           <button className="btn btn-ghost whitespace-nowrap text-lg w-full">
             Logout
           </button>

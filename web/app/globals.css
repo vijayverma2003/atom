@@ -44,6 +44,11 @@ body {
 @layer components {
   /* Buttons */
 
+  button {
+    cursor: pointer;
+    font-size: 1.4rem;
+  }
+
   button:disabled {
     opacity: 0.5;
     cursor: not-allowed;
@@ -53,9 +58,7 @@ body {
     @apply flex items-center justify-center bg-light-foreground
       text-dark-background font-semibold px-8 py-3;
 
-    font-size: 1.4rem;
     border-radius: var(--radius);
-    cursor: pointer;
     transition: background 0.3s ease-out;
   }
 
@@ -83,6 +86,23 @@ body {
 
   .btn-faded:hover {
     @apply bg-light-background/50;
+  }
+
+  .btn-tabular {
+    font-weight: bold;
+    position: relative;
+    padding-bottom: 1rem;
+  }
+
+  .btn-tabular-active::after {
+    content: "";
+    width: 100%;
+    height: 2px;
+    background-color: var(--color-light-foreground);
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    border-radius: var(--radius);
   }
 
   /* Avatar */
