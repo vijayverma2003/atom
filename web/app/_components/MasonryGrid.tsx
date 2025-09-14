@@ -1,8 +1,8 @@
 "use client";
 
-import imagesData from "@/public/images/data.json";
 import NextImage from "next/image";
 import { useCallback, useEffect, useRef, useState } from "react";
+import ImageDisplay from "./ImageDisplay";
 
 interface ImageData {
   id: number;
@@ -30,7 +30,7 @@ const MAX_COLUMNS = 5;
 const MIN_COLUMNS = 2;
 const MIN_CONTAINER_WIDTH = 300;
 
-const MasonryGrid = () => {
+const MasonryGrid = ({ imagesData }: { imagesData: ImageData[] }) => {
   const [containerHeight, setContainerHeight] = useState(0);
   const [transformedImages, setTransformedImages] = useState<
     TransformedImageData[]
@@ -94,7 +94,7 @@ const MasonryGrid = () => {
       columnCountRef.current = maxColumns;
       columnOffsets.current = Array(maxColumns).fill(0);
       const transformations = calcTransformations(
-        imagesData.slice(0),
+        imagesData,
         contentWidth,
         maxColumns
       );
@@ -177,22 +177,7 @@ const MasonryGrid = () => {
       {transformedImages.map(
         (image, index) =>
           image.visible && (
-            <NextImage
-              key={image.id}
-              style={{
-                position: "absolute",
-                top: 0,
-                left: 0,
-                transform: `translate3d(${image.translateX}px, ${image.translateY}px, 0)`,
-                willChange: "transform",
-              }}
-              src={image.src}
-              alt={image.alt}
-              width={image.width}
-              height={image.height}
-              draggable={false}
-              className="bg-light-background/50 brightness-90"
-            />
+            <ImageDisplay key={image.id} {...image} id={image.id.toString()} />
           )
       )}
     </div>
