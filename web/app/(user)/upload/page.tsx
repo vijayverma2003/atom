@@ -1,13 +1,17 @@
 "use client";
 
 import {
+  ImageFormData,
+  imageFormSchema,
   ImageObjectData,
   imageObjectSchema,
 } from "@/../shared/validation/image-object";
 import Carousel from "@/app/_components/Carousel";
 import FilesContext from "@/context/FilesContext";
+import api from "@/services/api.client";
 import { zodResolver } from "@hookform/resolvers/zod";
-import Image from "next/image";
+import axios from "axios";
+import NextImage from "next/image";
 import { useRouter } from "next/navigation";
 import { ChangeEvent, useContext, useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
@@ -16,8 +20,8 @@ const FileUploadPage = () => {
   const { files: uploadedFiles } = useContext(FilesContext);
   const [previewURLs, setPreviewURLs] = useState<string[]>([]);
   const [files, setFiles] = useState<File[]>([]);
-  const fileInputRef = useRef<HTMLInputElement | null>(null);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
   const router = useRouter();
   const componentReloadRef = useRef(0);
 
@@ -27,8 +31,9 @@ const FileUploadPage = () => {
     formState: { isValid, errors: formErrors },
     handleSubmit,
     trigger,
-  } = useForm<ImageObjectData>({
-    resolver: zodResolver(imageObjectSchema),
+    reset,
+  } = useForm<ImageFormData>({
+    resolver: zodResolver(imageFormSchema),
     mode: "onChange",
   });
 
@@ -69,10 +74,94 @@ const FileUploadPage = () => {
     setValue("images", currentFiles);
   };
 
-  const onSubmit = handleSubmit((data) => {
+  const createImageHash = async (image: File) => {
+    const buffer = await image.arrayBuffer();
+    const hash = await crypto.subtle.digest("SHA-256", buffer);
+    const hashArray = Array.from(new Uint8Array(hash));
+    const hashString = hashArray.map((byte) =>
+      byte.toString(16).padStart(2, "0")
+    );
+    return hashString.join("");
+  };
+
+  const getImageDimensions = (
+    image: File
+  ): Promise<{ width: number; height: number }> => {
+    return new Promise((resolve, reject) => {
+      const img = new Image();
+      img.src = URL.createObjectURL(image);
+      img.onload = async () => {
+        resolve({ width: img.width, height: img.height });
+        URL.revokeObjectURL(img.src);
+      };
+
+      img.onerror = (error) => reject(error);
+    });
+  };
+
+  const onSubmit = handleSubmit(async (data) => {
     // Todo - Handle Form Submission
 
-    console.log(data);
+    const images: {
+      name: string;
+      hash: string;
+      url: string;
+      width: number;
+      height: number;
+      type: string;
+      size: number;
+    }[] = [];
+
+    for (let image of data.images) {
+      console.log("Image", image);
+
+      try {
+        const dimensions = await getImageDimensions(image);
+        const hash = await createImageHash(image);
+
+        const presignedUrlData = {
+          name: image.name,
+          size: image.size,
+          type: image.type,
+          hash: hash,
+        };
+
+        const {
+          data: { signedUrl, imageUrl },
+        } = await api.post(`/images/get-presigned-url`, presignedUrlData);
+
+        if (signedUrl) {
+          await axios.put(signedUrl, image, {
+            headers: { "Content-Type": image.type },
+          });
+        }
+
+        images.push({
+          hash,
+          name: image.name,
+          url: imageUrl,
+          width: dimensions.width,
+          height: dimensions.height,
+          type: image.type,
+          size: image.size,
+        });
+      } catch (error) {
+        console.log("Generating hash or getting presigned url failed", error);
+      }
+    }
+
+    const response = await api.post<ImageObjectData>(`/images/post`, {
+      title: data.title,
+      description: data.description,
+      images,
+    });
+
+    console.log(response.data);
+
+    reset({ title: "", images: [], description: "" });
+    setFiles([]);
+    setPreviewURLs([]);
+    setCurrentImageIndex(0);
   });
 
   useEffect(() => {
@@ -209,7 +298,7 @@ const FileUploadPage = () => {
                           />
                         </svg>
                       </button>
-                      <Image
+                      <NextImage
                         src={url}
                         alt="Preview"
                         width={100}

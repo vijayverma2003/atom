@@ -20,6 +20,8 @@ model User {
   name    String?
   avatar  String?   @db.VarChar(1000)
   Account Account[]
+
+  Object Object[]
 }
 
 model Account {
@@ -30,4 +32,28 @@ model Account {
   user              User   @relation(fields: [userId], references: [id])
 
   @@unique([provider, providerAccountId])
+}
+
+model Image {
+  id        String   @id @default(cuid())
+  name      String   @db.VarChar(250)
+  size      Int
+  width     Int
+  height    Int
+  type      String
+  hash      String   @unique
+  url       String
+  Object    Object   @relation(fields: [objectId], references: [id])
+  objectId  String
+  createdAt DateTime @default(now())
+}
+
+model Object {
+  id          String   @id @default(cuid())
+  title       String   @db.VarChar(250)
+  description String   @db.VarChar(1000)
+  userId      String
+  user        User     @relation(fields: [userId], references: [id])
+  images      Image[]
+  createdAt   DateTime @default(now())
 }
