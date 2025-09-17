@@ -5,8 +5,8 @@ interface ImageDisplayData {
   id: string;
   width: number;
   height: number;
-  src: string;
-  alt: string;
+  url: string;
+  description: string;
   translateX: number;
   translateY: number;
 }
@@ -25,8 +25,8 @@ const ImageDisplay = (data: ImageDisplayData) => {
     >
       <Image
         key={data.id}
-        src={data.src}
-        alt={data.alt}
+        src={data.url}
+        alt={data.description}
         width={data.width}
         height={data.height}
         draggable={false}

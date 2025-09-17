@@ -1,7 +1,7 @@
 import Image from "next/image";
 import React, { Dispatch, SetStateAction } from "react";
 
-const Carousel = ({
+const FullPageCarousel = ({
   imageURLs,
   currentIndex,
   setCurrentIndex,
@@ -81,4 +81,4 @@ const Carousel = ({
   );
 };
 
-export default Carousel;
+export default FullPageCarousel;

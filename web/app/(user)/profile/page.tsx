@@ -1,14 +1,23 @@
 import MasonryGrid from "@/app/_components/MasonryGrid";
+import serverAPI from "@/services/api.server";
 import { getClientUser } from "@/services/users";
 import Image from "next/image";
 import { redirect } from "next/navigation";
-import Tabs from "../_components/Tabs";
+import {
+  Image as ImageData,
+  Object as ObjectData,
+} from "../../../../database/generated/prisma";
 
 export default async function ProfilePage() {
   const { user, error } = await getClientUser();
   if (!user || error) redirect("/");
 
   console.log(user);
+
+  const api = await serverAPI();
+  const { data } = await api.get<(ObjectData & { images: ImageData[] })[]>(
+    `/images/${user.id}`
+  );
 
   return (
     <section className="p-container mx-auto p-8">
@@ -30,7 +39,8 @@ export default async function ProfilePage() {
         </div>
       </div>
       <div className="my-16">
-        <Tabs />
+        {/* <Tabs /> */}
+        <MasonryGrid imageObjects={data} />
       </div>
     </section>
   );

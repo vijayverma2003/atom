@@ -98,4 +98,23 @@ router.post("/get-presigned-url", async (req, res, next) => {
   }
 });
 
+router.get("/:userId", async (req, res, next) => {
+  try {
+    const user = req.user as { id: string };
+    const userId = req.params.userId;
+
+    if (!user) return res.status(401).json({ error: "Unauthorized" });
+    if (user.id !== userId) return res.status(403).json({ error: "Forbidden" });
+
+    const objects = await prisma.object.findMany({
+      where: { userId: user.id },
+      include: { images: true },
+    });
+
+    res.status(200).json(objects);
+  } catch (error) {
+    next(error);
+  }
+});
+
 export default router;

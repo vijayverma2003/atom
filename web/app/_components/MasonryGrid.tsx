@@ -1,27 +1,17 @@
 "use client";
 
-import NextImage from "next/image";
 import { useCallback, useEffect, useRef, useState } from "react";
-import ImageDisplay from "./ImageDisplay";
+import { Image, Object } from "../../../database/generated/prisma";
+import CompactCarousel from "./CompactCarousel";
 
-interface ImageData {
-  id: number;
+type ImageObject = Object & { images: Image[] };
+type TransformedImageObject = ImageObject & {
   width: number;
   height: number;
-  src: string;
-  alt: string;
-}
-
-interface TransformedImageData {
-  id: number;
-  width: number;
-  height: number;
-  src: string;
-  alt: string;
   translateX: number;
   translateY: number;
   visible: boolean;
-}
+};
 
 const COLUMN_GAP = 24;
 const ROW_GAP = 24;
@@ -30,27 +20,28 @@ const MAX_COLUMNS = 5;
 const MIN_COLUMNS = 2;
 const MIN_CONTAINER_WIDTH = 300;
 
-const MasonryGrid = ({ imagesData }: { imagesData: ImageData[] }) => {
+const MasonryGrid = ({ imageObjects }: { imageObjects: ImageObject[] }) => {
   const [containerHeight, setContainerHeight] = useState(0);
-  const [transformedImages, setTransformedImages] = useState<
-    TransformedImageData[]
+  const [transformedImageObjects, setTransformedImageObjects] = useState<
+    TransformedImageObject[]
   >([]);
 
   const columnCountRef = useRef<number>(1);
   const columnOffsets = useRef<number[]>([]);
   const containerRef = useRef<HTMLDivElement>(null);
   const resizeTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const transformedImagesRef = useRef<TransformedImageData[]>([]);
+  const transformedImagesRef = useRef<TransformedImageObject[]>([]);
   const rAFRef = useRef<number | null>(null);
 
   const calcTransformations = useCallback(
-    (images: ImageData[], containerWidth: number, columns: number) => {
+    (imageObjects: ImageObject[], containerWidth: number, columns: number) => {
       let offsets = columnOffsets.current || Array(columns).fill(0);
-      const transformedImages: TransformedImageData[] = [];
+      const transformedImageObjects: TransformedImageObject[] = [];
 
-      for (let i = 0; i < images.length; i++) {
+      for (let i = 0; i < imageObjects.length; i++) {
         const shortestColumn = offsets.indexOf(Math.min(...offsets));
-        const aspectRatio = images[i].width / images[i].height;
+        const aspectRatio =
+          imageObjects[i].images[0].width / imageObjects[i].images[0].height;
         const width = (containerWidth - COLUMN_GAP * (columns - 1)) / columns;
         const height = width / aspectRatio;
         const column = shortestColumn;
@@ -61,8 +52,8 @@ const MasonryGrid = ({ imagesData }: { imagesData: ImageData[] }) => {
         newOffsets[column] += height + ROW_GAP;
         offsets = newOffsets;
 
-        const transformedImage: TransformedImageData = {
-          ...images[i],
+        const transformedImage: TransformedImageObject = {
+          ...imageObjects[i],
           width: Math.round(width),
           height: Math.round(height),
           translateX,
@@ -70,10 +61,10 @@ const MasonryGrid = ({ imagesData }: { imagesData: ImageData[] }) => {
           visible: false,
         };
 
-        transformedImages.push(transformedImage);
+        transformedImageObjects.push(transformedImage);
       }
 
-      return { transformedImages, offsets };
+      return { transformedImages: transformedImageObjects, offsets };
     },
     []
   );
@@ -94,14 +85,14 @@ const MasonryGrid = ({ imagesData }: { imagesData: ImageData[] }) => {
       columnCountRef.current = maxColumns;
       columnOffsets.current = Array(maxColumns).fill(0);
       const transformations = calcTransformations(
-        imagesData,
+        imageObjects,
         contentWidth,
         maxColumns
       );
 
       columnOffsets.current = transformations.offsets;
       transformedImagesRef.current = transformations.transformedImages;
-      setTransformedImages(transformations.transformedImages);
+      setTransformedImageObjects(transformations.transformedImages);
       setContainerHeight(Math.max(...transformations.offsets, 0));
     }
   }, []);
@@ -122,7 +113,7 @@ const MasonryGrid = ({ imagesData }: { imagesData: ImageData[] }) => {
       .filter((image) => image.translateY >= start && image.translateY <= end)
       .map((image) => image.id);
 
-    setTransformedImages((prev) => {
+    setTransformedImageObjects((prev) => {
       const images = prev.map((image) =>
         visibleImageIds.includes(image.id)
           ? { ...image, visible: true }
@@ -132,8 +123,6 @@ const MasonryGrid = ({ imagesData }: { imagesData: ImageData[] }) => {
       transformedImagesRef.current = images;
       return images;
     });
-
-    console.log("Total Childrens -", containerRef.current?.children.length);
   }, []);
 
   const handleResize = () => {
@@ -174,10 +163,29 @@ const MasonryGrid = ({ imagesData }: { imagesData: ImageData[] }) => {
       className="gap-8 relative w-full"
       style={{ height: containerHeight, minWidth: MIN_CONTAINER_WIDTH }}
     >
-      {transformedImages.map(
-        (image, index) =>
-          image.visible && (
-            <ImageDisplay key={image.id} {...image} id={image.id.toString()} />
+      {transformedImageObjects.map(
+        (imageObject) =>
+          imageObject.visible && (
+            <div
+              key={imageObject.id}
+              style={{
+                width: `${imageObject.width}px`,
+                height: `${imageObject.height}px`,
+                position: "absolute",
+                top: 0,
+                left: 0,
+                transform: `translate3d(${imageObject.translateX}px, ${imageObject.translateY}px, 0)`,
+                willChange: "transform",
+                overflow: "hidden",
+              }}
+            >
+              <CompactCarousel
+                images={imageObject.images}
+                key={imageObject.id}
+                width={imageObject.width}
+                height={imageObject.height}
+              />
+            </div>
           )
       )}
     </div>

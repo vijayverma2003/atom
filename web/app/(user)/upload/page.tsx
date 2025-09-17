@@ -6,7 +6,7 @@ import {
   ImageObjectData,
   imageObjectSchema,
 } from "@/../shared/validation/image-object";
-import Carousel from "@/app/_components/Carousel";
+import FullPageCarousel from "@/app/_components/FullPageCarousel";
 import FilesContext from "@/context/FilesContext";
 import api from "@/services/api.client";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -217,7 +217,7 @@ const FileUploadPage = () => {
       <div className="grid-upload-page h-full">
         <div className="flex flex-col justify-center items-center gap-6">
           {files.length > 0 ? (
-            <Carousel
+            <FullPageCarousel
               imageURLs={previewURLs}
               currentIndex={currentImageIndex}
               setCurrentIndex={setCurrentImageIndex}
