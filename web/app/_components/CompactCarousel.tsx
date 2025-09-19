@@ -37,10 +37,13 @@ const CompactCarousel = ({
           {images.map((_, index) => (
             <button
               key={_.id}
-              className={`cursor-pointer w-3 h-3 rounded-full mx-1 bg-white ${
+              className={`cursor-pointer w-2.5 h-2.5 rounded-full mx-1 bg-white ${
                 index === currentIndex ? "opacity-90" : "opacity-50"
               }`}
-              onClick={() => setCurrentIndex(index)}
+              onClick={(e) => {
+                e.preventDefault();
+                setCurrentIndex(index);
+              }}
             ></button>
           ))}
         </div>
