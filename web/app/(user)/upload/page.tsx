@@ -3,7 +3,7 @@
 import {
   ImageFormData,
   imageFormSchema,
-  ImageObjectData
+  ImageObjectData,
 } from "@/../shared/validation/image-object";
 import FullPageCarousel from "@/app/_components/FullPageCarousel";
 import FilesContext from "@/context/FilesContext";
@@ -110,6 +110,7 @@ const FileUploadPage = () => {
       height: number;
       type: string;
       size: number;
+      key: string;
     }[] = [];
 
     for (let image of data.images) {
@@ -127,7 +128,7 @@ const FileUploadPage = () => {
         };
 
         const {
-          data: { signedUrl, imageUrl },
+          data: { signedUrl, imageUrl, key },
         } = await api.post(`/images/get-presigned-url`, presignedUrlData);
 
         if (signedUrl) {
@@ -144,6 +145,7 @@ const FileUploadPage = () => {
           height: dimensions.height,
           type: image.type,
           size: image.size,
+          key,
         });
       } catch (error) {
         console.log("Generating hash or getting presigned url failed", error);

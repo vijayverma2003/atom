@@ -1,18 +1,23 @@
-import { PutObjectCommand } from "@aws-sdk/client-s3";
+import {
+  DeleteObjectsCommand,
+  PutObjectCommand,
+  waitUntilObjectNotExists,
+} from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import { Router } from "express";
 import crypto from "node:crypto";
 import z from "zod";
+import { Prisma } from "../../database/generated/prisma";
+import prisma from "../../database/prisma";
 import {
-  presignedUrlDataSchema,
   imageObjectSchema,
+  presignedUrlDataSchema,
 } from "../../shared/validation/image-object";
 import config from "../utils/config";
 import S3 from "../utils/s3-client";
-import prisma from "../../database/prisma";
-import { Prisma } from "../../database/generated/prisma";
 
 const router = Router();
+const BUCKET_NAME = "image-sharing-app";
 
 router.post("/create", async (req, res, next) => {
   try {
@@ -80,7 +85,7 @@ router.post("/get-presigned-url", async (req, res, next) => {
       S3,
       new PutObjectCommand({
         Key: key,
-        Bucket: "image-sharing-app",
+        Bucket: BUCKET_NAME,
         ContentType: type,
         ContentLength: size,
       }),
@@ -90,6 +95,7 @@ router.post("/get-presigned-url", async (req, res, next) => {
     );
 
     return res.status(201).json({
+      key,
       imageUrl,
       signedUrl,
     });
@@ -126,6 +132,52 @@ router.get("/:id", async (req, res, next) => {
     });
 
     res.status(200).json(post);
+  } catch (error) {
+    next(error);
+  }
+});
+
+router.delete("/:id", async (req, res, next) => {
+  try {
+    const id = req.params.id;
+    const user = req.user as { id: string };
+
+    const post = await prisma.post.findUnique({
+      where: { id, userId: user.id },
+      include: { images: true },
+    });
+
+    if (!post) return res.status(401).json({ error: "Unauthorized" });
+
+    let keys = post.images.map((image) => {
+      if (!image.key) {
+        const url = new URL(image.url);
+        return decodeURIComponent(url.pathname.slice(1));
+      } else return image.key;
+    });
+
+    await prisma.$transaction(async (tx) => {
+      await tx.image.deleteMany({
+        where: { postId: id },
+      });
+      await tx.post.delete({ where: { id } });
+    });
+
+    const command = new DeleteObjectsCommand({
+      Bucket: BUCKET_NAME,
+      Delete: { Objects: keys.map((key) => ({ Key: key })) },
+    });
+
+    await S3.send(command);
+
+    for (const key in keys) {
+      await waitUntilObjectNotExists(
+        { client: S3, maxWaitTime: 30 },
+        { Bucket: BUCKET_NAME, Key: key }
+      );
+    }
+
+    res.status(200).json({});
   } catch (error) {
     next(error);
   }

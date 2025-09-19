@@ -44,6 +44,7 @@ model Image {
   url       String
   post      Post     @relation(fields: [postId], references: [id])
   postId    String
+  key       String?
   createdAt DateTime @default(now())
 }
 

@@ -1,15 +1,17 @@
 "use client";
 
 import FullPageCarousel from "@/app/_components/FullPageCarousel";
+import AuthContext from "@/context/AuthContext";
 import api from "@/services/api.client";
 import { useParams, useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import {
   Image as ImageData,
   Post,
 } from "../../../../../database/generated/prisma";
 
 const page = () => {
+  const user = useContext(AuthContext);
   const params = useParams();
   const router = useRouter();
 
@@ -17,17 +19,30 @@ const page = () => {
   const [post, setPost] = useState<Post & { images: ImageData[] }>();
 
   const fetchData = async () => {
-    console.log("Fetching Data");
-    const { data: post } = await api.get<Post & { images: ImageData[] }>(
-      `/images/${params.id}`
-    );
+    try {
+      const { data: post } = await api.get<Post & { images: ImageData[] }>(
+        `/images/${params.id}`
+      );
 
-    setPost(post);
+      setPost(post);
+    } catch (error) {
+      // TODO: Handle errors
+    }
   };
 
   useEffect(() => {
     fetchData();
   }, []);
+
+  const handleDelete = async () => {
+    try {
+      await api.delete(`/images/${params.id}`);
+      router.push("/");
+      router.refresh();
+    } catch (error) {
+      // TODO: Handle errors
+    }
+  };
 
   if (!post) return null;
 
@@ -68,6 +83,16 @@ const page = () => {
               {post.description || "No description found"}
             </p>
           </div>
+          {user && user.id === post.userId && (
+            <div className="flex justify-center">
+              <button
+                onClick={handleDelete}
+                className="btn btn-faded w-full text-red-700 bg-red-700/10"
+              >
+                Delete Post
+              </button>
+            </div>
+          )}
         </div>
       </div>
     </section>
