@@ -40,7 +40,7 @@ const ShareImageIconButton = () => {
         </svg>
       </Link>
       <div className="py-2 tooltip-content absolute top-[100%] right-0">
-        <div className="bg-light-background/80 py-4 px-8 flex flex-col items-center justify-center gap-2 rounded-2xl border border-light-background">
+        <div className="bg-light-background py-4 px-8 flex flex-col items-center justify-center gap-2 rounded-2xl border border-light-background">
           <input
             ref={fileInputRef}
             id="nav-file-input"

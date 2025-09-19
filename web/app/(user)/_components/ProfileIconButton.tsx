@@ -11,7 +11,7 @@ const ProfileIconButton = ({ avatarURL }: { avatarURL: string | null }) => {
         )}
       </button>
       <div className="py-2 tooltip-content absolute top-[100%] right-0">
-        <div className="bg-light-background/50 py-4 px-8 flex flex-col items-center justify-center gap-2 rounded-2xl border border-light-background">
+        <div className="bg-light-background py-4 px-8 flex flex-col items-center justify-center gap-2 rounded-2xl border border-light-background">
           <Link
             href="/profile"
             className="btn btn-ghost whitespace-nowrap text-lg w-full"

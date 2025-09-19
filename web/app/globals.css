@@ -71,7 +71,7 @@ body {
   }
 
   .btn-ghost:hover {
-    background-color: var(--color-light-background);
+    @apply bg-dark-background/30;
   }
 
   .btn-circle {
