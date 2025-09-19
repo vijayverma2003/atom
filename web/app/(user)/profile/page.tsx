@@ -17,8 +17,6 @@ export default async function ProfilePage() {
     `/images?userId=${user.id}`
   );
 
-  console.log(data);
-
   return (
     <section className="p-container mx-auto p-8">
       <div className="flex items-center gap-8 mb-8">
@@ -40,7 +38,7 @@ export default async function ProfilePage() {
       </div>
       <div className="my-16">
         <h2 className="my-8 text-3xl font-bold">Your Objects</h2>
-        <MasonryGrid imageObjects={data} />
+        <MasonryGrid posts={data} />
       </div>
     </section>
   );

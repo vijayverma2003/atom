@@ -3,18 +3,18 @@
 import {
   ImageFormData,
   imageFormSchema,
-  ImageObjectData,
-  imageObjectSchema,
+  ImageObjectData
 } from "@/../shared/validation/image-object";
 import FullPageCarousel from "@/app/_components/FullPageCarousel";
 import FilesContext from "@/context/FilesContext";
 import api from "@/services/api.client";
 import { zodResolver } from "@hookform/resolvers/zod";
-import axios from "axios";
+import axios, { AxiosResponse } from "axios";
 import NextImage from "next/image";
 import { useRouter } from "next/navigation";
 import { ChangeEvent, useContext, useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
+import { Post } from "../../../../database/generated/prisma";
 
 const FileUploadPage = () => {
   const { files: uploadedFiles } = useContext(FilesContext);
@@ -150,18 +150,17 @@ const FileUploadPage = () => {
       }
     }
 
-    const response = await api.post<ImageObjectData>(`/images/create`, {
-      title: data.title,
-      description: data.description,
-      images,
-    });
+    const response = await api.post<ImageObjectData, AxiosResponse<Post>>(
+      `/images/create`,
+      {
+        title: data.title,
+        description: data.description,
+        images,
+      }
+    );
 
-    console.log(response.data);
-
-    reset({ title: "", images: [], description: "" });
-    setFiles([]);
-    setPreviewURLs([]);
-    setCurrentImageIndex(0);
+    router.push(`/images/${response.data.id}`);
+    router.refresh();
   });
 
   useEffect(() => {
