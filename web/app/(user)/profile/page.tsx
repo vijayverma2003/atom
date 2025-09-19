@@ -14,7 +14,7 @@ export default async function ProfilePage() {
 
   const api = await serverAPI();
   const { data } = await api.get<(Post & { images: ImageData[] })[]>(
-    `/images/users/${user.id}`
+    `/images?userId=${user.id}`
   );
 
   console.log(data);

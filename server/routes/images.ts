@@ -10,6 +10,7 @@ import {
 import config from "../utils/config";
 import S3 from "../utils/s3-client";
 import prisma from "../../database/prisma";
+import { Prisma } from "../../database/generated/prisma";
 
 const router = Router();
 
@@ -98,16 +99,14 @@ router.post("/get-presigned-url", async (req, res, next) => {
   }
 });
 
-router.get("/users/:userId", async (req, res, next) => {
+router.get("/", async (req, res, next) => {
   try {
-    const user = req.user as { id: string };
-    const userId = req.params.userId;
+    const userId = req.query.userId;
 
-    if (!user) return res.status(401).json({ error: "Unauthorized" });
-    if (user.id !== userId) return res.status(403).json({ error: "Forbidden" });
+    const where = (userId ? { userId } : undefined) as Prisma.PostWhereInput;
 
     const objects = await prisma.post.findMany({
-      where: { userId: user.id },
+      where,
       include: { images: true },
     });
 
@@ -121,7 +120,7 @@ router.get("/:id", async (req, res, next) => {
   try {
     const id = req.params.id;
 
-    const post = await prisma.post.findMany({
+    const post = await prisma.post.findUnique({
       where: { id },
       include: { images: true },
     });
