@@ -19,7 +19,7 @@ const CompactCarousel = ({
     <div className="relative group" style={{ width, height }}>
       {images.map((image, index) => (
         <NextImage
-          className={`absolute top-0 left-0 w-full h-full object-contain opacity-0 ${
+          className={`absolute top-0 left-0 w-full h-full object-contain transition-opacity duration-300 ease-out opacity-0 ${
             index === currentIndex && "opacity-100"
           }`}
           src={image.url}

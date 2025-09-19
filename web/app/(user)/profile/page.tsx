@@ -34,12 +34,12 @@ export default async function ProfilePage() {
           )}
         </div>
         <div>
-          <h2 className="text-2xl font-bold mb-2">{user.name}</h2>
+          <h2 className="text-4xl font-bold mb-2">{user.name}</h2>
           <p className="text-gray-500">{user.email}</p>
         </div>
       </div>
       <div className="my-16">
-        {/* <Tabs /> */}
+        <h2 className="my-8 text-3xl font-bold">Your Objects</h2>
         <MasonryGrid imageObjects={data} />
       </div>
     </section>

@@ -13,8 +13,8 @@ type TransformedImageObject = ImageObject & {
   visible: boolean;
 };
 
-const COLUMN_GAP = 24;
-const ROW_GAP = 24;
+const COLUMN_GAP = 32;
+const ROW_GAP = 40;
 const MIN_WIDTH = 250;
 const MAX_COLUMNS = 5;
 const MIN_COLUMNS = 2;
@@ -176,7 +176,7 @@ const MasonryGrid = ({ imageObjects }: { imageObjects: ImageObject[] }) => {
                 left: 0,
                 transform: `translate3d(${imageObject.translateX}px, ${imageObject.translateY}px, 0)`,
                 willChange: "transform",
-                overflow: "hidden",
+                cursor: "pointer",
               }}
             >
               <CompactCarousel
@@ -185,6 +185,11 @@ const MasonryGrid = ({ imageObjects }: { imageObjects: ImageObject[] }) => {
                 width={imageObject.width}
                 height={imageObject.height}
               />
+              <div className="overflow-hidden">
+                <p className="text-lg font-semibold py-2 whitespace-nowrap overflow-hidden overflow-ellipsis">
+                  {imageObject.title}
+                </p>
+              </div>
             </div>
           )
       )}
