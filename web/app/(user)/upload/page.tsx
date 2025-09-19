@@ -7,6 +7,7 @@ import {
 } from "@/../shared/validation/image-object";
 import FullPageCarousel from "@/app/_components/FullPageCarousel";
 import FilesContext from "@/context/FilesContext";
+import ToastContext from "@/context/ToastContext";
 import api from "@/services/api.client";
 import { zodResolver } from "@hookform/resolvers/zod";
 import axios, { AxiosError, AxiosResponse } from "axios";
@@ -15,7 +16,6 @@ import { useRouter } from "next/navigation";
 import { ChangeEvent, useContext, useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { Post } from "../../../../database/generated/prisma";
-import ToastContext from "@/context/ToastContext";
 
 const FileUploadPage = () => {
   const { files: uploadedFiles } = useContext(FilesContext);
@@ -165,9 +165,11 @@ const FileUploadPage = () => {
         }
       );
 
-      addToast("success", "Post Created");
-      router.push(`/images/${response.data.id}`);
+      router.replace(`/images/${response.data.id}`);
       router.refresh();
+
+      addToast("success", "Post Created");
+      reset();
     } catch (error) {
       if (error instanceof AxiosError) {
         addToast(
@@ -200,6 +202,9 @@ const FileUploadPage = () => {
 
     return () => {
       for (let url of previewURLs) URL.revokeObjectURL(url);
+      setFiles([]);
+      setPreviewURLs([]);
+      setCurrentImageIndex(0);
     };
   }, [uploadedFiles]);
 
