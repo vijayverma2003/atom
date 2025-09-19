@@ -37,7 +37,7 @@ export default async function ProfilePage() {
         </div>
       </div>
       <div className="my-16">
-        <h2 className="my-8 text-3xl font-bold">Your Objects</h2>
+        <h2 className="my-8 text-3xl font-bold">Your Posts</h2>
         <MasonryGrid posts={data} />
       </div>
     </section>

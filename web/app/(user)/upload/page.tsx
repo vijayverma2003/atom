@@ -116,8 +116,6 @@ const FileUploadPage = () => {
     }[] = [];
 
     for (let image of data.images) {
-      console.log("Image", image);
-
       try {
         const dimensions = await getImageDimensions(image);
         const hash = await createImageHash(image);
@@ -292,7 +290,7 @@ const FileUploadPage = () => {
         </div>
         <div className="bg-light-background/50 rounded-l-4xl py-8 px-8 flex flex-col justify-between">
           <div>
-            <h1 className="text-3xl font-semibold mb-12">Create Object</h1>
+            <h1 className="text-3xl font-semibold mb-12">Create Post</h1>
             <div className="mb-12">
               <h2 className="mb-8">Selected Images</h2>
               {previewURLs.length > 0 ? (
@@ -366,7 +364,7 @@ const FileUploadPage = () => {
                 className="btn btn-faded w-full"
                 disabled={!isValid}
               >
-                Create Object
+                Create Post
               </button>
             </div>
           </div>
