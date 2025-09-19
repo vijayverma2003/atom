@@ -105,12 +105,12 @@ router.get("/", async (req, res, next) => {
 
     const where = (userId ? { userId } : undefined) as Prisma.PostWhereInput;
 
-    const objects = await prisma.post.findMany({
+    const posts = await prisma.post.findMany({
       where,
       include: { images: true },
     });
 
-    res.status(200).json(objects);
+    res.status(200).json(posts);
   } catch (error) {
     next(error);
   }

@@ -1,14 +1,13 @@
 "use client";
 
 import FullPageCarousel from "@/app/_components/FullPageCarousel";
-import React, { useEffect, useState } from "react";
-import {
-  Post,
-  Image as ImageData,
-} from "../../../../../database/generated/prisma";
 import api from "@/services/api.client";
-import { notFound, useParams, useRouter } from "next/navigation";
-import Image from "next/image";
+import { useParams, useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import {
+  Image as ImageData,
+  Post,
+} from "../../../../../database/generated/prisma";
 
 const page = () => {
   const params = useParams();

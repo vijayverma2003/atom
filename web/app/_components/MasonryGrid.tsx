@@ -5,8 +5,8 @@ import { Image, Post } from "../../../database/generated/prisma";
 import CompactCarousel from "./CompactCarousel";
 import Link from "next/link";
 
-type ImageObject = Post & { images: Image[] };
-type TransformedImageObject = ImageObject & {
+type CompletePost = Post & { images: Image[] };
+type TransformedPost = CompletePost & {
   width: number;
   height: number;
   translateX: number;
@@ -21,28 +21,28 @@ const MAX_COLUMNS = 5;
 const MIN_COLUMNS = 2;
 const MIN_CONTAINER_WIDTH = 300;
 
-const MasonryGrid = ({ imageObjects }: { imageObjects: ImageObject[] }) => {
+const MasonryGrid = ({ posts }: { posts: CompletePost[] }) => {
   const [containerHeight, setContainerHeight] = useState(0);
-  const [transformedImageObjects, setTransformedImageObjects] = useState<
-    TransformedImageObject[]
-  >([]);
+  const [transformedPosts, setTransformedPosts] = useState<TransformedPost[]>(
+    []
+  );
 
   const columnCountRef = useRef<number>(1);
   const columnOffsets = useRef<number[]>([]);
   const containerRef = useRef<HTMLDivElement>(null);
   const resizeTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const transformedImagesRef = useRef<TransformedImageObject[]>([]);
+  const transformedImagesRef = useRef<TransformedPost[]>([]);
   const rAFRef = useRef<number | null>(null);
 
   const calcTransformations = useCallback(
-    (imageObjects: ImageObject[], containerWidth: number, columns: number) => {
+    (posts: CompletePost[], containerWidth: number, columns: number) => {
       let offsets = columnOffsets.current || Array(columns).fill(0);
-      const transformedImageObjects: TransformedImageObject[] = [];
+      const transformedPosts: TransformedPost[] = [];
 
-      for (let i = 0; i < imageObjects.length; i++) {
+      for (let i = 0; i < posts.length; i++) {
         const shortestColumn = offsets.indexOf(Math.min(...offsets));
         const aspectRatio =
-          imageObjects[i].images[0].width / imageObjects[i].images[0].height;
+          posts[i].images[0].width / posts[i].images[0].height;
         const width = (containerWidth - COLUMN_GAP * (columns - 1)) / columns;
         const height = width / aspectRatio;
         const column = shortestColumn;
@@ -53,8 +53,8 @@ const MasonryGrid = ({ imageObjects }: { imageObjects: ImageObject[] }) => {
         newOffsets[column] += height + ROW_GAP;
         offsets = newOffsets;
 
-        const transformedImage: TransformedImageObject = {
-          ...imageObjects[i],
+        const transformedImage: TransformedPost = {
+          ...posts[i],
           width: Math.round(width),
           height: Math.round(height),
           translateX,
@@ -62,10 +62,10 @@ const MasonryGrid = ({ imageObjects }: { imageObjects: ImageObject[] }) => {
           visible: false,
         };
 
-        transformedImageObjects.push(transformedImage);
+        transformedPosts.push(transformedImage);
       }
 
-      return { transformedImages: transformedImageObjects, offsets };
+      return { transformedImages: transformedPosts, offsets };
     },
     []
   );
@@ -86,14 +86,14 @@ const MasonryGrid = ({ imageObjects }: { imageObjects: ImageObject[] }) => {
       columnCountRef.current = maxColumns;
       columnOffsets.current = Array(maxColumns).fill(0);
       const transformations = calcTransformations(
-        imageObjects,
+        posts,
         contentWidth,
         maxColumns
       );
 
       columnOffsets.current = transformations.offsets;
       transformedImagesRef.current = transformations.transformedImages;
-      setTransformedImageObjects(transformations.transformedImages);
+      setTransformedPosts(transformations.transformedImages);
       setContainerHeight(Math.max(...transformations.offsets, 0));
     }
   }, []);
@@ -114,7 +114,7 @@ const MasonryGrid = ({ imageObjects }: { imageObjects: ImageObject[] }) => {
       .filter((image) => image.translateY >= start && image.translateY <= end)
       .map((image) => image.id);
 
-    setTransformedImageObjects((prev) => {
+    setTransformedPosts((prev) => {
       const images = prev.map((image) =>
         visibleImageIds.includes(image.id)
           ? { ...image, visible: true }
@@ -164,33 +164,33 @@ const MasonryGrid = ({ imageObjects }: { imageObjects: ImageObject[] }) => {
       className="gap-8 relative w-full"
       style={{ height: containerHeight, minWidth: MIN_CONTAINER_WIDTH }}
     >
-      {transformedImageObjects.map(
-        (imageObject) =>
-          imageObject.visible && (
+      {transformedPosts.map(
+        (post) =>
+          post.visible && (
             <div
-              key={imageObject.id}
+              key={post.id}
               style={{
-                width: `${imageObject.width}px`,
-                height: `${imageObject.height}px`,
+                width: `${post.width}px`,
+                height: `${post.height}px`,
                 position: "absolute",
                 top: 0,
                 left: 0,
-                transform: `translate3d(${imageObject.translateX}px, ${imageObject.translateY}px, 0)`,
+                transform: `translate3d(${post.translateX}px, ${post.translateY}px, 0)`,
                 willChange: "transform",
                 cursor: "pointer",
               }}
             >
-              <Link href={`/images/${imageObject.id}`}>
+              <Link href={`/images/${post.id}`}>
                 <CompactCarousel
-                  images={imageObject.images}
-                  key={imageObject.id}
-                  width={imageObject.width}
-                  height={imageObject.height}
+                  images={post.images}
+                  key={post.id}
+                  width={post.width}
+                  height={post.height}
                 />
               </Link>
               <div className="overflow-hidden">
-                <p className="text-lg font-semibold py-2 whitespace-nowrap overflow-hidden overflow-ellipsis">
-                  {imageObject.title}
+                <p className="text-lg font-semibold py-2 whitespace-nowrap overflow-hidden overflow-ellipsis text-dark-foreground">
+                  {post.title}
                 </p>
               </div>
             </div>
