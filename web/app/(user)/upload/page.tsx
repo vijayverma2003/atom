@@ -9,12 +9,13 @@ import FullPageCarousel from "@/app/_components/FullPageCarousel";
 import FilesContext from "@/context/FilesContext";
 import api from "@/services/api.client";
 import { zodResolver } from "@hookform/resolvers/zod";
-import axios, { AxiosResponse } from "axios";
+import axios, { AxiosError, AxiosResponse } from "axios";
 import NextImage from "next/image";
 import { useRouter } from "next/navigation";
 import { ChangeEvent, useContext, useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { Post } from "../../../../database/generated/prisma";
+import ToastContext from "@/context/ToastContext";
 
 const FileUploadPage = () => {
   const { files: uploadedFiles } = useContext(FilesContext);
@@ -24,6 +25,7 @@ const FileUploadPage = () => {
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const router = useRouter();
   const componentReloadRef = useRef(0);
+  const { addToast } = useContext(ToastContext);
 
   const {
     register,
@@ -148,21 +150,33 @@ const FileUploadPage = () => {
           key,
         });
       } catch (error) {
-        console.log("Generating hash or getting presigned url failed", error);
+        addToast("error", "An error occured while uploading images");
+        return;
       }
     }
 
-    const response = await api.post<ImageObjectData, AxiosResponse<Post>>(
-      `/images/create`,
-      {
-        title: data.title,
-        description: data.description,
-        images,
-      }
-    );
+    try {
+      const response = await api.post<ImageObjectData, AxiosResponse<Post>>(
+        `/images/create`,
+        {
+          title: data.title,
+          description: data.description,
+          images,
+        }
+      );
 
-    router.push(`/images/${response.data.id}`);
-    router.refresh();
+      addToast("success", "Post Created");
+      router.push(`/images/${response.data.id}`);
+      router.refresh();
+    } catch (error) {
+      if (error instanceof AxiosError) {
+        addToast(
+          "error",
+          error.response?.data.message ||
+            "An error occured while uploading images"
+        );
+      } else addToast("error", "An error occured while uploading images");
+    }
   });
 
   useEffect(() => {

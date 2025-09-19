@@ -9,11 +9,14 @@ import {
   Image as ImageData,
   Post,
 } from "../../../../../database/generated/prisma";
+import ToastContext from "@/context/ToastContext";
+import { AxiosError } from "axios";
 
 const page = () => {
   const user = useContext(AuthContext);
   const params = useParams();
   const router = useRouter();
+  const { addToast } = useContext(ToastContext);
 
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [post, setPost] = useState<Post & { images: ImageData[] }>();
@@ -26,7 +29,12 @@ const page = () => {
 
       setPost(post);
     } catch (error) {
-      // TODO: Handle errors
+      if (error instanceof AxiosError) {
+        addToast(
+          "error",
+          error.response?.data.message || "An error occured while fetching post"
+        );
+      } else addToast("error", "An error occured while fetching post");
     }
   };
 
@@ -37,10 +45,17 @@ const page = () => {
   const handleDelete = async () => {
     try {
       await api.delete(`/images/${params.id}`);
+      addToast("success", "Post Deleted");
       router.push("/");
       router.refresh();
     } catch (error) {
-      // TODO: Handle errors
+      if (error instanceof AxiosError) {
+        addToast(
+          "error",
+          error.response?.data.message ||
+            "An error occured while deleting the post"
+        );
+      } else addToast("error", "An error occured while deleting the post");
     }
   };
 

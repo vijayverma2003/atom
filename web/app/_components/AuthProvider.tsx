@@ -3,14 +3,22 @@
 import AuthContext from "@/context/AuthContext";
 import api from "@/services/api.client";
 import { AxiosError, AxiosResponse } from "axios";
-import { PropsWithChildren, useEffect, useRef, useState } from "react";
+import {
+  PropsWithChildren,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import { UserWithoutSensitiveInfo } from "../../types/users";
+import ToastContext from "@/context/ToastContext";
 
 const REFRESH_INTERVAL_MS = 10 * 60 * 1000; // 10 minutes
 const RECENT_MS = 30_000; // 30 seconds
 
 const AuthProvider = ({ children }: PropsWithChildren) => {
   const [user, setUser] = useState<UserWithoutSensitiveInfo | null>(null);
+  const { addToast } = useContext(ToastContext);
 
   // Todo
   // Return expiresIn from the server side to not add a magic interval
@@ -20,14 +28,14 @@ const AuthProvider = ({ children }: PropsWithChildren) => {
   const fetchUser = async () => {
     try {
       const { data } = await api.get<UserWithoutSensitiveInfo>("/users/me");
-      console.log("Fetched User", data.id);
       setUser(data);
     } catch (error) {
       if (error instanceof AxiosError) {
-        console.log(error.response?.data);
-      }
-      // Todo - Show toast notification
-      console.log("Fetching User Failed", error);
+        addToast(
+          "error",
+          error.response?.data.message || "Error fetching user data"
+        );
+      } else addToast("error", "Error fetching user data");
     }
   };
 
@@ -55,14 +63,12 @@ const AuthProvider = ({ children }: PropsWithChildren) => {
         }
       }
       await refreshingRef.current;
-      console.log("Refreshed Token");
 
       storeLastRefreshAt();
 
-      // Fetch user data
       if (!user) fetchUser();
     } catch (error) {
-      console.log("Refreshing Token Failed", error);
+      addToast("error", "Failed to refresh token");
     } finally {
       refreshingRef.current = null;
     }
@@ -83,8 +89,6 @@ const AuthProvider = ({ children }: PropsWithChildren) => {
   };
 
   useEffect(() => {
-    console.log("AuthProvider mounted");
-
     refreshToken();
 
     window.addEventListener("focus", onWake);
@@ -95,7 +99,6 @@ const AuthProvider = ({ children }: PropsWithChildren) => {
     }, REFRESH_INTERVAL_MS);
 
     return () => {
-      console.log("AuthProvider unmounted");
       window.removeEventListener("focus", onWake);
       document.removeEventListener("visibilitychange", onWake);
       clearInterval(interval);
