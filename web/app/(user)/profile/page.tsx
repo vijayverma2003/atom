@@ -5,19 +5,19 @@ import Image from "next/image";
 import { redirect } from "next/navigation";
 import {
   Image as ImageData,
-  Object as ObjectData,
+  Post,
 } from "../../../../database/generated/prisma";
 
 export default async function ProfilePage() {
   const { user, error } = await getClientUser();
   if (!user || error) redirect("/");
 
-  console.log(user);
-
   const api = await serverAPI();
-  const { data } = await api.get<(ObjectData & { images: ImageData[] })[]>(
-    `/images/${user.id}`
+  const { data } = await api.get<(Post & { images: ImageData[] })[]>(
+    `/images/users/${user.id}`
   );
+
+  console.log(data);
 
   return (
     <section className="p-container mx-auto p-8">

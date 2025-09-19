@@ -150,7 +150,7 @@ const FileUploadPage = () => {
       }
     }
 
-    const response = await api.post<ImageObjectData>(`/images/post`, {
+    const response = await api.post<ImageObjectData>(`/images/create`, {
       title: data.title,
       description: data.description,
       images,

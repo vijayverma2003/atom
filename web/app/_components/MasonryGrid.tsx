@@ -1,10 +1,11 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
-import { Image, Object } from "../../../database/generated/prisma";
+import { Image, Post } from "../../../database/generated/prisma";
 import CompactCarousel from "./CompactCarousel";
+import Link from "next/link";
 
-type ImageObject = Object & { images: Image[] };
+type ImageObject = Post & { images: Image[] };
 type TransformedImageObject = ImageObject & {
   width: number;
   height: number;
@@ -179,12 +180,14 @@ const MasonryGrid = ({ imageObjects }: { imageObjects: ImageObject[] }) => {
                 cursor: "pointer",
               }}
             >
-              <CompactCarousel
-                images={imageObject.images}
-                key={imageObject.id}
-                width={imageObject.width}
-                height={imageObject.height}
-              />
+              <Link href={`/images/${imageObject.id}`}>
+                <CompactCarousel
+                  images={imageObject.images}
+                  key={imageObject.id}
+                  width={imageObject.width}
+                  height={imageObject.height}
+                />
+              </Link>
               <div className="overflow-hidden">
                 <p className="text-lg font-semibold py-2 whitespace-nowrap overflow-hidden overflow-ellipsis">
                   {imageObject.title}

@@ -13,7 +13,7 @@ import prisma from "../../database/prisma";
 
 const router = Router();
 
-router.post("/post", async (req, res, next) => {
+router.post("/create", async (req, res, next) => {
   try {
     const body = req.body;
     const validation = imageObjectSchema.safeParse(body);
@@ -34,7 +34,7 @@ router.post("/post", async (req, res, next) => {
 
     const generatedHashes = storedImages.map((image) => image.hash);
 
-    const object = await prisma.object.create({
+    const object = await prisma.post.create({
       data: {
         title,
         description,
@@ -98,7 +98,7 @@ router.post("/get-presigned-url", async (req, res, next) => {
   }
 });
 
-router.get("/:userId", async (req, res, next) => {
+router.get("/users/:userId", async (req, res, next) => {
   try {
     const user = req.user as { id: string };
     const userId = req.params.userId;
@@ -106,12 +106,27 @@ router.get("/:userId", async (req, res, next) => {
     if (!user) return res.status(401).json({ error: "Unauthorized" });
     if (user.id !== userId) return res.status(403).json({ error: "Forbidden" });
 
-    const objects = await prisma.object.findMany({
+    const objects = await prisma.post.findMany({
       where: { userId: user.id },
       include: { images: true },
     });
 
     res.status(200).json(objects);
+  } catch (error) {
+    next(error);
+  }
+});
+
+router.get("/:id", async (req, res, next) => {
+  try {
+    const id = req.params.id;
+
+    const post = await prisma.post.findMany({
+      where: { id },
+      include: { images: true },
+    });
+
+    res.status(200).json(post);
   } catch (error) {
     next(error);
   }

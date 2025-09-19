@@ -20,8 +20,7 @@ model User {
   name    String?
   avatar  String?   @db.VarChar(1000)
   Account Account[]
-
-  Object Object[]
+  posts   Post[]
 }
 
 model Account {
@@ -43,12 +42,12 @@ model Image {
   type      String
   hash      String   @unique
   url       String
-  Object    Object   @relation(fields: [objectId], references: [id])
-  objectId  String
+  post      Post     @relation(fields: [postId], references: [id])
+  postId    String
   createdAt DateTime @default(now())
 }
 
-model Object {
+model Post {
   id          String   @id @default(cuid())
   title       String   @db.VarChar(250)
   description String   @db.VarChar(1000)
@@ -56,4 +55,6 @@ model Object {
   user        User     @relation(fields: [userId], references: [id])
   images      Image[]
   createdAt   DateTime @default(now())
+
+  @@map("Object")
 }
