@@ -81,7 +81,7 @@ const page = () => {
           </svg>
         </button>
       </div>
-      <div className="grid-upload-page h-full">
+      <div className="grid-upload-page h-full max-[768px]:pt-24 max-[768px]:gap-16">
         <div className="flex flex-col justify-center items-center gap-6">
           <FullPageCarousel
             imageURLs={post.images.map((image) => image.url)}
@@ -89,7 +89,7 @@ const page = () => {
             setCurrentIndex={setCurrentImageIndex}
           />
         </div>
-        <div className="bg-light-background/50 rounded-l-4xl py-8 px-8 flex flex-col justify-between">
+        <div className="bg-light-background/50 rounded-l-4xl py-8 px-8 flex flex-col justify-between max-[768px]:rounded-l-none max-[768px]:!rounded-t-4xl">
           <div>
             <h1 className="text-3xl font-semibold mb-8">
               {post.title || "Post"}

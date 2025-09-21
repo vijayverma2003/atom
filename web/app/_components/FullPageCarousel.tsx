@@ -21,8 +21,8 @@ const FullPageCarousel = ({
   };
 
   return (
-    <div className="flex flex-col gap-6">
-      <div className="w-[500px] h-[500px] overflow-hidden relative">
+    <div className="flex flex-col gap-6 w-full items-center min-h-[400px] px-10">
+      <div className="w-full h-full overflow-hidden relative">
         {imageURLs.map((url, index) => (
           <Image
             className={`absolute top-0 left-0 w-full h-full object-contain transition-opacity ease-out duration-500 opacity-0 ${
@@ -31,9 +31,8 @@ const FullPageCarousel = ({
             src={url}
             key={url}
             alt="Preview"
-            width={500}
-            height={500}
             draggable={false}
+            fill
           />
         ))}
       </div>

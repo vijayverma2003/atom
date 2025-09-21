@@ -19,7 +19,7 @@ export default async function ProfilePage() {
 
   return (
     <section className="p-container mx-auto p-8">
-      <div className="flex items-center gap-8 mb-8">
+      <div className="flex items-center gap-8 mb-8 max-[480px]:flex-col max-[480px]:items-center">
         <div className="w-[80px] h-[80px] relative rounded-full avatar-gradient cursor-pointer overflow-hidden">
           {user.avatar && (
             <Image
@@ -32,12 +32,16 @@ export default async function ProfilePage() {
           )}
         </div>
         <div>
-          <h2 className="text-4xl font-bold mb-2">{user.name}</h2>
-          <p className="text-gray-500">{user.email}</p>
+          <h2 className="text-4xl font-bold mb-2 max-[480px]:text-center">
+            {user.name}
+          </h2>
+          <p className="text-gray-500 max-[480px]:text-center">{user.email}</p>
         </div>
       </div>
       <div className="my-16">
-        <h2 className="my-8 text-3xl font-bold">Your Posts</h2>
+        <h2 className="my-8 text-3xl font-bold max-[480px]:text-center">
+          Your Posts
+        </h2>
         <MasonryGrid posts={data} />
       </div>
     </section>

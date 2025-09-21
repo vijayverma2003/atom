@@ -19,7 +19,7 @@ const ROW_GAP = 40;
 const MIN_WIDTH = 250;
 const MAX_COLUMNS = 5;
 const MIN_COLUMNS = 2;
-const MIN_CONTAINER_WIDTH = 300;
+const MIN_CONTAINER_WIDTH = 200;
 
 const MasonryGrid = ({ posts }: { posts: CompletePost[] }) => {
   const [containerHeight, setContainerHeight] = useState(0);
