@@ -84,7 +84,6 @@ router.use("/callback/:path", async (req, res, next) => {
 
 router.post("/refresh-token", async (req, res, next) => {
   try {
-    console.log("Refreshing token...");
     const oldToken = req.cookies[cookies.TOKEN_COOKIE];
     if (!oldToken) return res.status(401).json({ error: "No token found" });
 
@@ -113,6 +112,15 @@ router.post("/refresh-token", async (req, res, next) => {
     res.cookie(cookies.TOKEN_COOKIE, newToken, cookies.tokenCookieOptions);
 
     return res.status(200).json({});
+  } catch (error) {
+    next(error);
+  }
+});
+
+router.post("/logout", (req, res, next) => {
+  try {
+    res.clearCookie(cookies.TOKEN_COOKIE, cookies.tokenCookieOptions);
+    res.status(200).json({});
   } catch (error) {
     next(error);
   }

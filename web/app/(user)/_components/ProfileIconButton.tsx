@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import React from "react";
+import LogoutButton from "./LogoutButton";
 
 const ProfileIconButton = ({ avatarURL }: { avatarURL: string | null }) => {
   return (
@@ -18,9 +19,7 @@ const ProfileIconButton = ({ avatarURL }: { avatarURL: string | null }) => {
           >
             Your Profile
           </Link>
-          <button className="btn btn-ghost whitespace-nowrap text-lg w-full">
-            Logout
-          </button>
+          <LogoutButton />
         </div>
       </div>
     </div>
