@@ -12,11 +12,13 @@ import {
 } from "react";
 import { UserWithoutSensitiveInfo } from "../../types/users";
 import ToastContext from "@/context/ToastContext";
+import { usePathname } from "next/navigation";
 
 const REFRESH_INTERVAL_MS = 10 * 60 * 1000; // 10 minutes
 const RECENT_MS = 30_000; // 30 seconds
 
 const AuthProvider = ({ children }: PropsWithChildren) => {
+  const pathname = usePathname();
   const [user, setUser] = useState<UserWithoutSensitiveInfo | null>(null);
   const { addToast } = useContext(ToastContext);
 
