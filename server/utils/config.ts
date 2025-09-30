@@ -1,7 +1,7 @@
 import dotenv from "dotenv";
 import path from "node:path";
 
-dotenv.config({ path: path.join(__dirname, "../.env") });
+dotenv.config({ path: path.join(__dirname, "../.env"), quiet: true });
 
 export default {
   nodeENV: process.env.NODE_ENV,

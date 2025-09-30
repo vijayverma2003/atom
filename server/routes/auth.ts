@@ -88,6 +88,9 @@ router.post("/refresh-token", async (req, res, next) => {
     if (!oldToken) return res.status(401).json({ error: "No token found" });
 
     const decoded = jwt.decode(oldToken) as { iat: number };
+    if (!decoded || !decoded.iat)
+      return res.status(401).json({ error: "Invalid token" });
+
     if (Date.now() / 1000 - decoded.iat > 60 * 60 * 24 * 7)
       return res
         .status(401)
