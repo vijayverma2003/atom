@@ -71,7 +71,6 @@ export default async function verify(
         });
       }
     } catch (error) {
-      console.log("Authentication Failed: ", error);
       done(error);
     }
   }
