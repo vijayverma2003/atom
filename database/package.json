@@ -4,8 +4,9 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "migrate": "pnpm dlx prisma migrate dev",
-    "generate": "pnpm dlx prisma generate"
+    "migrate": "prisma migrate dev",
+    "generate": "prisma generate",
+    "deploy": "prisma migrate deploy"
   },
   "keywords": [],
   "author": "Vijay <06.vijay.2003@gmail.com>",

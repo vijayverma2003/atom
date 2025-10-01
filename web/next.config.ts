@@ -11,6 +11,7 @@ const nextConfig: NextConfig = {
     ],
   },
   reactStrictMode: false,
+  transpilePackages: ["shared", "database"],
 };
 
 export default nextConfig;
